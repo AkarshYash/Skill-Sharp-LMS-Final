@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Certificate — Skills Sharp 365 Innovation</title>
+<meta name="description" content="Verify authentic certificates issued by the Skills Sharp 365 Innovation.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #a5b4fc;
+  --secondary: #0f0a2e;
+  --accent: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --cyan: #06b6d4;
+  --purple: #8b5cf6;
+  --surface: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --radius: 16px;
+  --shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--secondary);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* Background Grids & Orbs */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+.bg-orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px); pointer-events: none;
+}
+.orb1 { width:600px; height:600px; background:rgba(99,102,241,0.15); top:-100px; left:-100px; }
+.orb2 { width:500px; height:500px; background:rgba(139,92,246,0.1); bottom:-100px; right:-100px; }
+
+/* Verify Box */
+.verify-card {
+  position: relative;
+  z-index: 1;
+  max-width: 540px;
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 40px;
+  backdrop-filter: blur(25px);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.logo-logo {
+  display:inline-flex; align-items:center; gap:12px; text-decoration:none;
+  margin-bottom: 32px;
+}
+.logo-logo .logo-icon {
+  width:44px; height:44px; border-radius:12px;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  box-shadow: 0 0 20px rgba(99,102,241,0.4);
+}
+.logo-logo span { font-size:22px; font-weight:900; color:#fff; }
+.logo-logo span em { color: var(--primary-light); font-style:normal; }
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+  animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.status-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 2px solid var(--green);
+  color: var(--green);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+}
+.status-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 2px solid var(--red);
+  color: var(--red);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+}
+
+.verify-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.verify-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+/* Certificate Data Sheet */
+.cert-sheet {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: left;
+  margin-bottom: 32px;
+}
+.sheet-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sheet-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.sheet-row:first-child {
+  padding-top: 0;
+}
+.sheet-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sheet-value {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+.sheet-value.code-val {
+  font-family: monospace;
+  color: var(--primary-light);
+  font-size: 15px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  box-shadow: 0 0 20px rgba(99,102,241,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(99,102,241,0.5);
+}
+.btn-outline {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: #fff;
+  margin-top: 12px;
+}
+.btn-outline:hover {
+  background: var(--surface);
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<div class="verify-card">
+  <a href="/" class="logo-logo">
+    <div class="logo-icon">🎓</div>
+    <span>Skills Sharp <em>365</em></span>
+  </a>
+
+  <div id="loader">
+    <i class="fas fa-circle-notch fa-spin" style="font-size:48px;color:var(--primary);margin-bottom:20px"></i>
+    <h3 class="verify-title">Verifying Certificate</h3>
+    <p class="verify-desc">Checking cryptographic signatures on vector database...</p>
+  </div>
+
+  <div id="content" style="display:none">
+    <!-- Will be filled by JavaScript -->
+  </div>
+</div>
+
+<script>
+const verifyCode = "{{ code }}";
+
+async function verify() {
+  const loader = document.getElementById('loader');
+  const content = document.getElementById('content');
+  
+  try {
+    const res = await fetch(`/api/certificates/verify/${verifyCode}`);
+    const data = await res.json();
+    
+    loader.style.display = 'none';
+    content.style.display = 'block';
+    
+    if (data.valid) {
+      content.innerHTML = `
+        <div class="status-icon status-success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3 class="verify-title" style="color:var(--green)">✓ Authentic Certificate</h3>
+        <p class="verify-desc">This certificate was successfully verified as authentic and issued by the Skills Sharp 365 Innovation.</p>
+        
+        <div class="cert-sheet">
+          <div class="sheet-row">
+            <span class="sheet-label">Student Name</span>
+            <span class="sheet-value">${data.student_name}</span>
+          </div>
+          <div class="sheet-row">
+            <span class="sheet-label">Course Title</span>
+            <span class="sheet-value">${data.course_title}</span>
+          </div>
+          <div class="sheet-row">
+            <span class="sheet-label">Verification Code</span>
+            <span class="sheet-value code-val">${data.verify_code}</span>
+          </div>
+          <div class="sheet-row">
+            <span class="sheet-label">Issued On</span>
+            <span class="sheet-value">${new Date(data.issued_at).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})}</span>
+          </div>
+        </div>
+        
+        <a href="/" class="btn btn-primary"><i class="fas fa-home"></i> Go to Home Page</a>
+      `;
+    } else {
+      content.innerHTML = `
+        <div class="status-icon status-error">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <h3 class="verify-title" style="color:var(--red)">Verification Failed</h3>
+        <p class="verify-desc">${data.message || 'The verification code provided is invalid or has expired.'}</p>
+        
+        <div class="cert-sheet">
+          <div class="sheet-row" style="border-bottom:none">
+            <span class="sheet-label">Attempted Code</span>
+            <span class="sheet-value code-val" style="color:var(--red)">${verifyCode}</span>
+          </div>
+        </div>
+        
+        <a href="/" class="btn btn-primary"><i class="fas fa-home"></i> Go to Home Page</a>
+      `;
+    }
+  } catch (e) {
+    loader.style.display = 'none';
+    content.style.display = 'block';
+    content.innerHTML = `
+      <div class="status-icon status-error">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h3 class="verify-title">System Error</h3>
+      <p class="verify-desc">Could not connect to the verification API. Please check your internet connection and try again.</p>
+      <button onclick="window.location.reload()" class="btn btn-primary"><i class="fas fa-sync"></i> Retry Verification</button>
+    `;
+  }
+}
+
+// Start verification on load
+verify();
+</script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Skills Sharp 365 Innovation — AI-Powered Learning</title>
+  <meta name="description" content="India's most advanced AI-powered LMS for School, College, Professional & Competitive Exam preparation."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{
+      --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a2e;--card:#16213e;--card2:#0f3460;
+      --accent:#6c63ff;--accent2:#e94560;--accent3:#00d4aa;--accent4:#f59e0b;
+      --text:#f0f0ff;--text2:#a0a0c0;--text3:#606080;
+      --border:#2a2a4a;--shadow:rgba(108,99,255,0.15);
+      --glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1);
+      --grad1:linear-gradient(135deg,#6c63ff,#e94560);
+      --grad2:linear-gradient(135deg,#00d4aa,#6c63ff);
+      --grad3:linear-gradient(135deg,#f59e0b,#e94560);
+    }
+    [data-theme="light"]{
+      --bg:#f8f9ff;--bg2:#fff;--bg3:#eef0ff;--card:#fff;--card2:#f0f4ff;
+      --text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;
+      --border:#e0e0f0;--shadow:rgba(108,99,255,0.1);
+      --glass:rgba(255,255,255,0.8);--glass-border:rgba(108,99,255,0.2);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+    /* ── NAV ── */
+    nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 2rem;height:70px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(10,10,15,0.85);border-bottom:1px solid var(--border);transition:all .3s}
+    [data-theme="light"] nav{background:rgba(248,249,255,0.9)}
+    .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    .nav-logo{width:38px;height:38px;background:var(--grad1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;font-family:'Space Grotesk',sans-serif}
+    .nav-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:var(--text);letter-spacing:-.5px}
+    .nav-title span{color:var(--accent)}
+    .nav-links{display:flex;align-items:center;gap:1.5rem}
+    .nav-links a{color:var(--text2);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
+    .nav-links a:hover{color:var(--accent)}
+    .nav-actions{display:flex;align-items:center;gap:.75rem}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.4rem;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .25s;text-decoration:none;border:none;font-family:'Inter',sans-serif}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-primary{background:var(--grad1);color:#fff;box-shadow:0 4px 20px var(--shadow)}
+    .btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 30px var(--shadow)}
+    .btn-lg{padding:.85rem 2rem;font-size:1rem;border-radius:12px}
+    .theme-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .2s}
+    .theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.5rem}
+    .hamburger span{width:22px;height:2px;background:var(--text2);border-radius:2px;transition:all .3s}
+    /* ── HERO ── */
+    .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:6rem 2rem 4rem}
+    .hero-bg{position:absolute;inset:0;z-index:0}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.3}
+    .hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.15;animation:float 8s ease-in-out infinite}
+    .orb1{width:500px;height:500px;background:var(--accent);top:-100px;right:-100px;animation-delay:0s}
+    .orb2{width:400px;height:400px;background:var(--accent2);bottom:-50px;left:-100px;animation-delay:3s}
+    .orb3{width:300px;height:300px;background:var(--accent3);top:50%;left:40%;animation-delay:6s}
+    @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+    .hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);border-radius:100px;font-size:.8rem;color:var(--accent);font-weight:600;margin-bottom:1.5rem}
+    .hero-badge i{font-size:.75rem}
+    h1.hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.15;letter-spacing:-1.5px;margin-bottom:1.5rem}
+    .hero-title .grad{background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-desc{font-size:1.1rem;color:var(--text2);margin-bottom:2rem;max-width:500px;line-height:1.7}
+    .hero-stats{display:flex;gap:2rem;margin-bottom:2.5rem}
+    .stat{text-align:center}
+    .stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .stat-label{font-size:.8rem;color:var(--text3);font-weight:500}
+    .hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+    /* ── FLOATING CARDS ── */
+    .hero-visual{position:relative;height:500px}
+    .float-card{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.2rem;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:cardFloat 6s ease-in-out infinite;backdrop-filter:blur(10px)}
+    .card-main{width:280px;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;animation-delay:0s}
+    .card-top{width:220px;top:10%;right:5%;animation-delay:2s}
+    .card-bottom{width:200px;bottom:10%;left:5%;animation-delay:4s}
+    @keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+    .card-main{animation:none;transform:translate(-50%,-50%)}
+    .fc-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+    .fc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .fc-icon.purple{background:rgba(108,99,255,.2);color:var(--accent)}
+    .fc-icon.green{background:rgba(0,212,170,.2);color:var(--accent3)}
+    .fc-icon.red{background:rgba(233,69,96,.2);color:var(--accent2)}
+    .fc-icon.gold{background:rgba(245,158,11,.2);color:var(--accent4)}
+    .fc-title{font-weight:700;font-size:.95rem}
+    .fc-sub{font-size:.75rem;color:var(--text3)}
+    .progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:.5rem 0}
+    .progress-fill{height:100%;border-radius:3px;background:var(--grad1);transition:width .3s}
+    .fc-students{display:flex;gap:.25rem;margin-top:.75rem}
+    .fc-avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--bg);font-size:.65rem;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;margin-left:-8px}
+    .fc-avatar:first-child{margin-left:0}
+    .ai-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+    /* ── SECTIONS ── */
+    section{padding:5rem 2rem}
+    .container{max-width:1200px;margin:0 auto}
+    .section-label{display:inline-flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+    .section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1px;margin-bottom:1rem}
+    .section-desc{color:var(--text2);font-size:1.05rem;max-width:600px}
+    /* ── FEATURES GRID ── */
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+    .feature-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;transition:all .3s;position:relative;overflow:hidden}
+    .feature-card::before{content:'';position:absolute;inset:0;background:var(--grad1);opacity:0;transition:opacity .3s;border-radius:20px}
+    .feature-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 20px 60px var(--shadow)}
+    .feature-card:hover::before{opacity:.05}
+    .feature-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem;position:relative;z-index:1}
+    .fi-1{background:rgba(108,99,255,.15);color:var(--accent)}
+    .fi-2{background:rgba(0,212,170,.15);color:var(--accent3)}
+    .fi-3{background:rgba(233,69,96,.15);color:var(--accent2)}
+    .fi-4{background:rgba(245,158,11,.15);color:var(--accent4)}
+    .fi-5{background:rgba(59,130,246,.15);color:#3b82f6}
+    .fi-6{background:rgba(168,85,247,.15);color:#a855f7}
+    .feature-card h3{font-weight:700;font-size:1.1rem;margin-bottom:.5rem;position:relative;z-index:1}
+    .feature-card p{color:var(--text2);font-size:.9rem;position:relative;z-index:1;line-height:1.6}
+    /* ── CATEGORIES ── */
+    .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:2.5rem}
+    .cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .3s;text-decoration:none;color:var(--text)}
+    .cat-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 30px var(--shadow)}
+    .cat-icon{font-size:2rem;margin-bottom:.75rem}
+    .cat-name{font-weight:700;font-size:.9rem}
+    .cat-count{font-size:.8rem;color:var(--text3);margin-top:.25rem}
+    /* ── COURSES GRID ── */
+    .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:2.5rem}
+    .course-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;cursor:pointer}
+    .course-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.3);border-color:var(--accent)}
+    .course-thumb{height:160px;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative}
+    .course-thumb img{width:100%;height:100%;object-fit:cover}
+    .course-level{position:absolute;top:.75rem;right:.75rem;padding:.25rem .65rem;background:rgba(0,0,0,.6);border-radius:100px;font-size:.7rem;font-weight:700;color:#fff;text-transform:uppercase}
+    .course-body{padding:1.25rem}
+    .course-cat{font-size:.75rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+    .course-title{font-weight:700;font-size:1rem;margin-bottom:.75rem;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .course-meta{display:flex;align-items:center;gap:1rem;font-size:.8rem;color:var(--text3)}
+    .course-rating{color:var(--accent4)}
+    .course-price{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+    .price-tag{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:800;color:var(--accent)}
+    .price-free{color:var(--accent3)}
+    /* ── HOW IT WORKS ── */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;margin-top:3rem}
+    .step{text-align:center;position:relative}
+    .step-num{width:56px;height:56px;border-radius:50%;background:var(--grad1);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+    .step h3{font-weight:700;margin-bottom:.5rem}
+    .step p{color:var(--text2);font-size:.9rem}
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+    .testi-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem}
+    .testi-stars{color:var(--accent4);margin-bottom:.75rem;font-size:.9rem}
+    .testi-text{color:var(--text2);font-size:.95rem;margin-bottom:1.25rem;line-height:1.7;font-style:italic}
+    .testi-author{display:flex;align-items:center;gap:.75rem}
+    .testi-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+    .testi-name{font-weight:700;font-size:.9rem}
+    .testi-role{font-size:.8rem;color:var(--text3)}
+    /* ── CTA BANNER ── */
+    .cta-banner{background:var(--grad1);border-radius:24px;padding:4rem 3rem;text-align:center;position:relative;overflow:hidden}
+    .cta-banner::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    .cta-banner h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;color:#fff;margin-bottom:1rem;position:relative}
+    .cta-banner p{color:rgba(255,255,255,.85);font-size:1.05rem;margin-bottom:2rem;position:relative}
+    .btn-white{background:#fff;color:var(--accent);font-weight:700;position:relative}
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    /* ── FOOTER ── */
+    footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 2rem 2rem}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto}
+    .footer-brand .nav-brand{margin-bottom:1rem}
+    .footer-desc{color:var(--text2);font-size:.9rem;line-height:1.7;margin-bottom:1.5rem}
+    .footer-social{display:flex;gap:.75rem}
+    .social-icon{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:.85rem;cursor:pointer;transition:all .2s;text-decoration:none}
+    .social-icon:hover{border-color:var(--accent);color:var(--accent)}
+    .footer-col h4{font-weight:700;margin-bottom:1.25rem;font-size:.9rem}
+    .footer-col a{display:block;color:var(--text3);text-decoration:none;font-size:.85rem;margin-bottom:.6rem;transition:color .2s}
+    .footer-col a:hover{color:var(--accent)}
+    .footer-bottom{max-width:1200px;margin:3rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:.85rem;color:var(--text3)}
+    /* ── MOBILE NAV ── */
+    .mobile-nav{display:none;position:fixed;top:70px;left:0;width:100%;background:var(--bg2);border-bottom:1px solid var(--border);padding:1.5rem;z-index:999;flex-direction:column;gap:1rem}
+    .mobile-nav.open{display:flex}
+    .mobile-nav a{color:var(--text2);text-decoration:none;font-weight:500;padding:.5rem 0;border-bottom:1px solid var(--border)}
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-up{opacity:0;transform:translateY(30px);transition:all .6s ease}
+    .fade-up.visible{opacity:1;transform:translateY(0)}
+    /* ── LOADER ── */
+    #page-loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+    .loader-logo{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .loader-bar{width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+    .loader-fill{height:100%;background:var(--grad1);border-radius:2px;animation:load 1.5s ease forwards}
+    @keyframes load{from{width:0}to{width:100%}}
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .hero-content{grid-template-columns:1fr;text-align:center}
+      .hero-visual{display:none}
+      .hero-stats{justify-content:center}
+      .hero-actions{justify-content:center}
+      .hero-badge{margin:0 auto 1.5rem}
+      .footer-grid{grid-template-columns:1fr 1fr}
+      .nav-links{display:none}
+      .hamburger{display:flex}
+    }
+    @media(max-width:600px){
+      .footer-grid{grid-template-columns:1fr}
+      .hero-stats{gap:1.5rem}
+      .stat-num{font-size:1.4rem}
+      section{padding:3.5rem 1.25rem}
+    }
+  </style>
+</head>
+<body>
+<!-- Loader -->
+<div id="page-loader">
+  <div class="loader-logo">SS365</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- Nav -->
+<nav id="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo">SS</div>
+    <span class="nav-title">Skills<span>Sharp</span> 365</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#categories">Courses</a>
+    <a href="/courses">Explore</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#testimonials">Reviews</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle Theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+    <a href="/login" class="btn btn-ghost">Log In</a>
+    <a href="/register" class="btn btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+    <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobile-nav">
+  <a href="#features">Features</a>
+  <a href="/courses">Explore Courses</a>
+  <a href="#how-it-works">How It Works</a>
+  <a href="/login">Log In</a>
+  <a href="/register" class="btn btn-primary" style="text-align:center">Get Started Free</a>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="hero-orb orb3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge"><i class="fas fa-bolt"></i> India's #1 AI-Powered LMS</div>
+      <h1 class="hero-title">Learn Smarter with <span class="grad">AI-Powered</span> Education</h1>
+      <p class="hero-desc">From Class 1 to Professional Certifications — live classes, recorded courses, AI tutor, coding labs, mock interviews & career guidance all in one platform.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num" id="stat-students">50K+</div><div class="stat-label">Students</div></div>
+        <div class="stat"><div class="stat-num" id="stat-courses">500+</div><div class="stat-label">Courses</div></div>
+        <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfaction</div></div>
+        <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">AI Support</div></div>
+      </div>
+      <div class="hero-actions">
+        <a href="/register" class="btn btn-primary btn-lg"><i class="fas fa-graduation-cap"></i> Start Learning Free</a>
+        <a href="#categories" class="btn btn-ghost btn-lg"><i class="fas fa-play-circle"></i> Explore Courses</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- Main Card -->
+      <div class="float-card card-main">
+        <div class="fc-header">
+          <div class="fc-icon purple"><i class="fas fa-brain"></i></div>
+          <div><div class="fc-title">AI Tutor Active</div><div class="fc-sub">Answering 247 questions today</div></div>
+          <div class="ai-dot" style="margin-left:auto"></div>
+        </div>
+        <div style="font-size:.85rem;color:var(--text2);margin-bottom:.75rem">Current Focus: Data Structures</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text3);margin-top:.3rem"><span>DSA Progress</span><span>68%</span></div>
+        <div class="fc-students">
+          <div class="fc-avatar" style="background:var(--accent)">A</div>
+          <div class="fc-avatar" style="background:var(--accent2)">S</div>
+          <div class="fc-avatar" style="background:var(--accent3)">R</div>
+          <div class="fc-avatar" style="background:var(--accent4)">+4</div>
+        </div>
+      </div>
+      <!-- Top Card -->
+      <div class="float-card card-top">
+        <div class="fc-header">
+          <div class="fc-icon green"><i class="fas fa-video"></i></div>
+          <div><div class="fc-title">Live Class</div><div class="fc-sub">Starting in 15 min</div></div>
+        </div>
+        <div style="font-size:.8rem;color:var(--text2)">React + Node.js Bootcamp</div>
+        <div style="font-size:.75rem;color:var(--accent3);margin-top:.5rem;font-weight:600"><i class="fas fa-users"></i> 42 students joining</div>
+      </div>
+      <!-- Bottom Card -->
+      <div class="float-card card-bottom">
+        <div class="fc-header">
+          <div class="fc-icon gold"><i class="fas fa-trophy"></i></div>
+          <div><div class="fc-title">Badge Earned!</div><div class="fc-sub">Week Warrior 🔥</div></div>
+        </div>
+        <div style="font-size:.8rem;color:var(--accent4);font-weight:600">7-day streak complete</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-label"><i class="fas fa-sparkles"></i> Platform Features</div>
+    <h2 class="section-title">Everything You Need to <span style="background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Succeed</span></h2>
+    <p class="section-desc">A complete educational ecosystem built for every type of learner.</p>
+    <div class="features-grid">
+      <div class="feature-card fade-up"><div class="feature-icon fi-1"><i class="fas fa-robot"></i></div><h3>AI Study Assistant</h3><p>Ask anything — get instant AI-powered explanations, summaries, and practice quizzes using RAG technology with your course materials.</p></div>
+      <div class="feature-card fade-up"><div class="feature-icon fi-2"><i class="fas fa-video"></i></div><h3>Live Classes</h3><p>Join live sessions via Jitsi Meet or Google Meet. Teachers create classes, auto-generate meeting links, and students join with one click.</p></div>
+      <div class="feature-card fade-up"><div class="feature-icon fi-3"><i class="fas fa-code"></i></div><h3>Coding Lab</h3><p>Write, run, and get AI feedback on your code. Supports Python, Java, C++, JavaScript and more with test case evaluation.</p></div>
+      <div class="feature-card fade-up"><div class="feature-icon fi-4"><i class="fas fa-certificate"></i></div><h3>Certificates</h3><p>Auto-generated certificates with QR verification on course completion. Download as PDF and share on LinkedIn.</p></div>
+      <div class="feature-card fade-up"><div class="feature-icon fi-5"><i class="fas fa-comments"></i></div><h3>Group Chat</h3><p>WhatsApp-style real-time group messaging per course and batch. Share files, ask questions, and collaborate instantly.</p></div>
+      <div class="feature-card fade-up"><div class="feature-icon fi-6"><i class="fas fa-briefcase"></i></div><h3>Career Portal</h3><p>Browse jobs & internships, build your portfolio, get resume analysis with ATS scoring, and do AI mock interviews.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section id="categories">
+  <div class="container">
+    <div class="section-label"><i class="fas fa-th-large"></i> Learning Paths</div>
+    <h2 class="section-title">Choose Your <span style="background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Journey</span></h2>
+    <div class="categories-grid">
+      <a href="/courses?type=school" class="cat-card fade-up"><div class="cat-icon">🏫</div><div class="cat-name">School (1–12)</div><div class="cat-count">CBSE · RBSE · State Board</div></a>
+      <a href="/courses?type=college" class="cat-card fade-up"><div class="cat-icon">🎓</div><div class="cat-name">College</div><div class="cat-count">BTech · BCA · MBA · Law</div></a>
+      <a href="/courses?cat=Web+Development" class="cat-card fade-up"><div class="cat-icon">💻</div><div class="cat-name">Web Dev</div><div class="cat-count">React · Node · Full Stack</div></a>
+      <a href="/courses?cat=Artificial+Intelligence" class="cat-card fade-up"><div class="cat-icon">🤖</div><div class="cat-name">AI & ML</div><div class="cat-count">LangChain · RAG · Deep Learning</div></a>
+      <a href="/courses?cat=Cybersecurity" class="cat-card fade-up"><div class="cat-icon">🛡️</div><div class="cat-name">Cybersecurity</div><div class="cat-count">Ethical Hacking · VAPT</div></a>
+      <a href="/courses?cat=Data+Science" class="cat-card fade-up"><div class="cat-icon">📊</div><div class="cat-name">Data Science</div><div class="cat-count">Python · Pandas · ML</div></a>
+      <a href="/courses?cat=Cloud+Computing" class="cat-card fade-up"><div class="cat-icon">☁️</div><div class="cat-name">Cloud</div><div class="cat-count">AWS · DevOps · Docker</div></a>
+      <a href="/courses?cat=Competitive+Exams" class="cat-card fade-up"><div class="cat-icon">📝</div><div class="cat-name">Competitive</div><div class="cat-count">UPSC · JEE · NEET · CAT</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Courses -->
+<section style="background:var(--bg2)">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem">
+      <div>
+        <div class="section-label"><i class="fas fa-fire"></i> Featured Courses</div>
+        <h2 class="section-title" style="margin-bottom:0">Most Popular <span style="background:var(--grad3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Courses</span></h2>
+      </div>
+      <a href="/courses" class="btn btn-ghost">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="courses-grid" id="featured-courses">
+      <!-- Loaded dynamically -->
+      <div class="course-card"><div class="course-thumb" style="background:linear-gradient(135deg,#6c63ff,#e94560)">🤖</div><div class="course-body"><div class="course-cat">Artificial Intelligence</div><div class="course-title">AI Engineering & Large Language Models</div><div class="course-meta"><span class="course-rating"><i class="fas fa-star"></i> 4.9</span><span><i class="fas fa-users"></i> 850</span><span><i class="fas fa-clock"></i> 30h</span></div><div class="course-price"><span class="price-tag">₹3,999</span><a href="/courses" class="btn btn-primary" style="padding:.4rem .9rem;font-size:.8rem">Enroll</a></div></div></div>
+      <div class="course-card"><div class="course-thumb" style="background:linear-gradient(135deg,#00d4aa,#3b82f6)">💻</div><div class="course-body"><div class="course-cat">Web Development</div><div class="course-title">MERN Stack Development Bootcamp</div><div class="course-meta"><span class="course-rating"><i class="fas fa-star"></i> 4.8</span><span><i class="fas fa-users"></i> 1200</span><span><i class="fas fa-clock"></i> 60h</span></div><div class="course-price"><span class="price-tag">₹2,999</span><a href="/courses" class="btn btn-primary" style="padding:.4rem .9rem;font-size:.8rem">Enroll</a></div></div></div>
+      <div class="course-card"><div class="course-thumb" style="background:linear-gradient(135deg,#f59e0b,#e94560)">📝</div><div class="course-body"><div class="course-cat">Competitive Exams</div><div class="course-title">UPSC Civil Services Foundation Prep</div><div class="course-meta"><span class="course-rating"><i class="fas fa-star"></i> 4.9</span><span><i class="fas fa-users"></i> 2400</span><span><i class="fas fa-clock"></i> 80h</span></div><div class="course-price"><span class="price-free price-tag">FREE</span><a href="/courses" class="btn btn-primary" style="padding:.4rem .9rem;font-size:.8rem">Enroll</a></div></div></div>
+      <div class="course-card"><div class="course-thumb" style="background:linear-gradient(135deg,#a855f7,#6c63ff)">🏫</div><div class="course-body"><div class="course-cat">School · Class 10</div><div class="course-title">Class 10 Mathematics — Complete Board Prep</div><div class="course-meta"><span class="course-rating"><i class="fas fa-star"></i> 4.8</span><span><i class="fas fa-users"></i> 340</span><span><i class="fas fa-clock"></i> 20h</span></div><div class="course-price"><span class="price-free price-tag">FREE</span><a href="/courses" class="btn btn-primary" style="padding:.4rem .9rem;font-size:.8rem">Enroll</a></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="how-it-works">
+  <div class="container" style="text-align:center">
+    <div class="section-label" style="justify-content:center"><i class="fas fa-map"></i> Simple Process</div>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-desc" style="margin:0 auto 3rem">Get started in minutes and begin your learning journey today.</p>
+    <div class="steps">
+      <div class="step fade-up"><div class="step-num">1</div><h3>Create Account</h3><p>Sign up free with your email or Google. Choose your role: Student, Teacher, or Professional.</p></div>
+      <div class="step fade-up"><div class="step-num">2</div><h3>Browse & Enroll</h3><p>Explore courses by category, class, or career goal. Enroll in free or paid courses instantly.</p></div>
+      <div class="step fade-up"><div class="step-num">3</div><h3>Learn & Practice</h3><p>Watch lectures, attend live classes, use AI tutor, code in the lab, and take quizzes.</p></div>
+      <div class="step fade-up"><div class="step-num">4</div><h3>Get Certified</h3><p>Complete the course and certification exam to earn a verifiable certificate with QR code.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-label"><i class="fas fa-quote-left"></i> Student Reviews</div>
+    <h2 class="section-title">What Our <span style="background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Students Say</span></h2>
+    <div class="testimonials-grid">
+      <div class="testi-card fade-up"><div class="testi-stars">⭐⭐⭐⭐⭐</div><p class="testi-text">"The AI tutor is incredible — it answered all my C++ questions instantly with examples. I cleared my semester with a 9.2 GPA!"</p><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Akarsh Chaturvedi</div><div class="testi-role">BTech CSE Student</div></div></div></div>
+      <div class="testi-card fade-up"><div class="testi-stars">⭐⭐⭐⭐⭐</div><p class="testi-text">"The live classes with auto Jitsi Meet links are so convenient. My whole UPSC batch uses this platform now. Highly recommended!"</p><div class="testi-author"><div class="testi-avatar" style="background:var(--grad2)">P</div><div><div class="testi-name">Priya Sharma</div><div class="testi-role">UPSC Aspirant</div></div></div></div>
+      <div class="testi-card fade-up"><div class="testi-stars">⭐⭐⭐⭐⭐</div><p class="testi-text">"The AI mock interview gave me real feedback on my eye contact and confidence. I landed my first dev job within 2 months!"</p><div class="testi-author"><div class="testi-avatar" style="background:var(--grad3)">R</div><div><div class="testi-name">Rahul Verma</div><div class="testi-role">Junior Developer</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Ready to Transform Your Learning?</h2>
+      <p>Join 50,000+ students already learning on Skills Sharp 365 Innovation</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative">
+        <a href="/register" class="btn btn-white btn-lg"><i class="fas fa-rocket"></i> Start Free Today</a>
+        <a href="/courses" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)"><i class="fas fa-search"></i> Browse Courses</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="nav-brand" style="text-decoration:none">
+        <div class="nav-logo">SS</div>
+        <span class="nav-title">Skills<span>Sharp</span> 365</span>
+      </a>
+      <p class="footer-desc" style="margin-top:1rem">India's most comprehensive AI-powered learning platform for school students, college students, professionals, and competitive exam aspirants.</p>
+      <div class="footer-social">
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="/courses">All Courses</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/dashboard#live">Live Classes</a>
+      <a href="/dashboard#ai">AI Tutor</a>
+      <a href="/dashboard#lab">Code Lab</a>
+    </div>
+    <div class="footer-col">
+      <h4>Learn By</h4>
+      <a href="/courses?type=school">School (1–12)</a>
+      <a href="/courses?type=college">College Programs</a>
+      <a href="/courses?cat=Competitive+Exams">Competitive Exams</a>
+      <a href="/courses?type=professional">Professional Courses</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Skills Sharp 365 Innovation. All rights reserved.</span>
+    <span>Made with ❤️ in India</span>
+  </div>
+</footer>
+
+<script>
+// ── Page Loader
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const l=document.getElementById('page-loader');
+    l.style.opacity='0';l.style.transition='opacity .5s';
+    setTimeout(()=>l.style.display='none',500);
+  },1200);
+});
+
+// ── Theme Toggle
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-icon').className=isDark?'fas fa-sun':'fas fa-moon';
+  localStorage.setItem('theme',isDark?'light':'dark');
+}
+(function(){
+  const t=localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  if(document.getElementById('theme-icon'))
+    document.getElementById('theme-icon').className=t==='dark'?'fas fa-moon':'fas fa-sun';
+})();
+
+// ── Mobile Nav
+function toggleMobile(){document.getElementById('mobile-nav').classList.toggle('open')}
+
+// ── Scroll Animations
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+// ── Navbar scroll effect
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('navbar');
+  if(window.scrollY>50){nav.style.boxShadow='0 4px 30px rgba(0,0,0,.3)'}
+  else{nav.style.boxShadow='none'}
+});
+
+// ── Load featured courses from API
+async function loadFeaturedCourses(){
+  try{
+    const res=await fetch('/api/courses/?page=1&limit=4&featured=true');
+    if(!res.ok)return;
+    const data=await res.json();
+    if(!data.courses||data.courses.length===0)return;
+    const grid=document.getElementById('featured-courses');
+    const emojis={'Artificial Intelligence':'🤖','Web Development':'💻','Data Science':'📊','Cybersecurity':'🛡️','Cloud Computing':'☁️','Competitive Exams':'📝','Mathematics':'📐','Science':'🔬','default':'📚'};
+    const gradients=['linear-gradient(135deg,#6c63ff,#e94560)','linear-gradient(135deg,#00d4aa,#3b82f6)','linear-gradient(135deg,#f59e0b,#e94560)','linear-gradient(135deg,#a855f7,#6c63ff)'];
+    grid.innerHTML=data.courses.map((c,i)=>`
+      <div class="course-card" onclick="location.href='/courses#${c.id}'">
+        <div class="course-thumb" style="background:${gradients[i%gradients.length]}">
+          <span style="font-size:3rem">${emojis[c.category]||emojis.default}</span>
+          <div class="course-level">${c.level}</div>
+        </div>
+        <div class="course-body">
+          <div class="course-cat">${c.category||''}</div>
+          <div class="course-title">${c.title}</div>
+          <div class="course-meta">
+            <span class="course-rating"><i class="fas fa-star"></i> ${(c.rating||4.5).toFixed(1)}</span>
+            <span><i class="fas fa-users"></i> ${c.total_students||0}</span>
+          </div>
+          <div class="course-price">
+            <span class="${c.price===0?'price-free':''} price-tag">${c.price===0?'FREE':'₹'+Math.round(c.price*83)}</span>
+            <button class="btn btn-primary" style="padding:.4rem .9rem;font-size:.8rem" onclick="event.stopPropagation();window.location='/courses'">Enroll</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }catch(e){/* keep static cards */}
+}
+loadFeaturedCourses();
+</script>
+</body>
+</html>

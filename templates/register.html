@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Register — Skills Sharp 365</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--bg:#0a0a0f;--bg2:#12121a;--card:#16213e;--accent:#6c63ff;--accent2:#e94560;--accent3:#00d4aa;--text:#f0f0ff;--text2:#a0a0c0;--text3:#606080;--border:#2a2a4a;--shadow:rgba(108,99,255,0.2);--grad1:linear-gradient(135deg,#6c63ff,#e94560)}
+    [data-theme="light"]{--bg:#f8f9ff;--bg2:#fff;--card:#fff;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;--border:#e0e0f0}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;overflow-x:hidden}
+    .bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;pointer-events:none;z-index:0}
+    .orb1{width:400px;height:400px;background:#6c63ff;top:-100px;left:-100px}
+    .orb2{width:300px;height:300px;background:#00d4aa;bottom:-50px;right:-50px}
+    .auth-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:520px;box-shadow:0 40px 80px rgba(0,0,0,.4)}
+    .auth-header{text-align:center;margin-bottom:2rem}
+    .auth-logo{width:52px;height:52px;background:var(--grad1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin:0 auto 1rem}
+    .auth-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:.3rem}
+    .auth-sub{color:var(--text2);font-size:.9rem}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-group{margin-bottom:1.1rem}
+    label{display:block;font-size:.85rem;font-weight:600;color:var(--text2);margin-bottom:.4rem}
+    .input-wrap{position:relative}
+    .input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.85rem;z-index:1}
+    input,select{width:100%;padding:.7rem .75rem .7rem 2.4rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;transition:border .2s;outline:none;appearance:none}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.12)}
+    select option{background:var(--bg);color:var(--text)}
+    .role-picker{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+    .role-card{padding:.9rem .5rem;background:var(--bg);border:1px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
+    .role-card.active{border-color:var(--accent);background:rgba(108,99,255,.1)}
+    .role-card .ri{font-size:1.5rem;margin-bottom:.3rem}
+    .role-card span{display:block;font-size:.8rem;font-weight:700;color:var(--text2)}
+    .role-card.active span{color:var(--accent)}
+    .student-extra{display:none}
+    .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;border:none;font-family:'Inter',sans-serif}
+    .btn-primary{background:var(--grad1);color:#fff;box-shadow:0 4px 20px var(--shadow)}
+    .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .alert{padding:.75rem 1rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+    .alert-error{background:rgba(233,69,96,.1);border:1px solid rgba(233,69,96,.3);color:#e94560}
+    .alert-success{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00d4aa}
+    .auth-footer{text-align:center;margin-top:1.25rem;font-size:.85rem;color:var(--text2)}
+    .auth-footer a{color:var(--accent);font-weight:600;text-decoration:none}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .theme-btn{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+    .password-strength{height:4px;border-radius:2px;background:var(--border);margin-top:.4rem;overflow:hidden}
+    .ps-fill{height:100%;border-radius:2px;transition:width .3s,background .3s}
+    @media(max-width:480px){.form-row{grid-template-columns:1fr}.role-picker{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="auth-card">
+  <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+  <div class="auth-header">
+    <div class="auth-logo">SS</div>
+    <div class="auth-title">Create Account</div>
+    <div class="auth-sub">Join Skills Sharp 365 Innovation</div>
+  </div>
+  <div class="alert alert-error" id="error-alert"></div>
+  <div class="alert alert-success" id="success-alert"></div>
+  <!-- Role Picker -->
+  <label style="margin-bottom:.6rem">I am a...</label>
+  <div class="role-picker">
+    <div class="role-card active" data-role="student" onclick="selectRole('student')"><div class="ri">🎓</div><span>Student</span></div>
+    <div class="role-card" data-role="faculty" onclick="selectRole('faculty')"><div class="ri">👨‍🏫</div><span>Teacher</span></div>
+    <div class="role-card" data-role="professional" onclick="selectRole('professional')"><div class="ri">💼</div><span>Professional</span></div>
+  </div>
+  <form id="reg-form">
+    <input type="hidden" id="role" value="student"/>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="input-wrap"><i class="fas fa-user input-icon"></i><input type="text" id="name" placeholder="Your full name" required/></div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap"><i class="fas fa-envelope input-icon"></i><input type="email" id="email" placeholder="you@example.com" required/></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap"><i class="fas fa-lock input-icon"></i><input type="password" id="password" placeholder="Min 8 characters" required oninput="checkStrength(this.value)"/></div>
+      <div class="password-strength"><div class="ps-fill" id="ps-fill" style="width:0"></div></div>
+    </div>
+    <!-- Student extras -->
+    <div class="student-extra" id="student-extra">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Student Type</label>
+          <div class="input-wrap">
+            <i class="fas fa-layer-group input-icon"></i>
+            <select id="student_type">
+              <option value="">Select type</option>
+              <option value="school">School (1–12)</option>
+              <option value="college">College / University</option>
+              <option value="professional">Working Professional</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Class / Semester</label>
+          <div class="input-wrap">
+            <i class="fas fa-book input-icon"></i>
+            <select id="class_grade">
+              <option value="">Select grade</option>
+              <optgroup label="School">
+                <option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option><option>Class 5</option>
+                <option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option>
+                <option>Class 11</option><option>Class 12</option>
+              </optgroup>
+              <optgroup label="College">
+                <option>Semester 1</option><option>Semester 2</option><option>Semester 3</option><option>Semester 4</option>
+                <option>Semester 5</option><option>Semester 6</option><option>Semester 7</option><option>Semester 8</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Faculty extras -->
+    <div class="faculty-extra" id="faculty-extra" style="display:none">
+      <div class="form-group">
+        <label>Expertise / Subject</label>
+        <div class="input-wrap"><i class="fas fa-chalkboard-teacher input-icon"></i><input type="text" id="expertise" placeholder="e.g. Computer Science, Mathematics"/></div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-user-plus"></i> Create Account Free</button>
+  </form>
+  <div class="auth-footer">Already have an account? <a href="/login">Sign in</a></div>
+</div>
+<script>
+function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('theme',d?'light':'dark')}
+(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);const i=document.getElementById('theme-icon');if(i)i.className=t==='dark'?'fas fa-moon':'fas fa-sun'})();
+
+function selectRole(role){
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`[data-role="${role}"]`).classList.add('active');
+  document.getElementById('role').value=role==='professional'?'student':role;
+  document.getElementById('student-extra').style.display=(role==='student'||role==='professional')?'block':'none';
+  document.getElementById('faculty-extra').style.display=role==='faculty'?'block':'none';
+  if(role==='professional'){document.getElementById('student_type').value='professional'}
+}
+selectRole('student');
+
+function checkStrength(p){
+  let s=0;if(p.length>=8)s++;if(/[A-Z]/.test(p))s++;if(/[0-9]/.test(p))s++;if(/[^A-Za-z0-9]/.test(p))s++;
+  const f=document.getElementById('ps-fill');const colors=['#e94560','#f59e0b','#3b82f6','#00d4aa'];
+  f.style.width=(s*25)+'%';f.style.background=colors[s-1]||'var(--border)';
+}
+
+document.getElementById('reg-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Creating...';
+  const body={
+    name:document.getElementById('name').value,
+    email:document.getElementById('email').value,
+    password:document.getElementById('password').value,
+    role:document.getElementById('role').value,
+    student_type:document.getElementById('student_type')?.value||null,
+    class_grade:document.getElementById('class_grade')?.value||null,
+    expertise:document.getElementById('expertise')?.value||null
+  };
+  try{
+    const res=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(!res.ok){const a=document.getElementById('error-alert');a.textContent=data.detail||'Registration failed';a.style.display='block';btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i> Create Account Free';return}
+    localStorage.setItem('access_token',data.access_token);localStorage.setItem('refresh_token',data.refresh_token);localStorage.setItem('user',JSON.stringify(data.user));
+    const a=document.getElementById('success-alert');a.textContent='Account created! Redirecting to dashboard...';a.style.display='block';
+    setTimeout(()=>{
+      if(data.user.role === 'admin') window.location.href='/admin';
+      else if(data.user.role === 'faculty') window.location.href='/faculty';
+      else window.location.href='/dashboard';
+    },1000);
+  }catch(err){const a=document.getElementById('error-alert');a.textContent='Network error. Please try again.';a.style.display='block';btn.disabled=false;btn.innerHTML='<i class="fas fa-user-plus"></i> Create Account Free'}
+});
+if(localStorage.getItem('access_token')){
+  const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  if(savedUser.role === 'admin') window.location.href='/admin';
+  else if(savedUser.role === 'faculty') window.location.href='/faculty';
+  else window.location.href='/dashboard';
+}
+</script>
+</body>
+</html>

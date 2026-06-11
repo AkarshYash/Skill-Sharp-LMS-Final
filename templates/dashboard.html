@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — Skill Sharp 365 Innovations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+  --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#a5b4fc;
+  --bg:#0a0614;--surface:#12103a;--surface2:#1a1850;--border:rgba(255,255,255,0.08);
+  --text:#f1f5f9;--text-muted:#64748b;--green:#10b981;--red:#ef4444;--accent:#f59e0b;
+  --cyan:#06b6d4;--purple:#8b5cf6;--sidebar:240px;
+}
+*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;transition:background 0.3s, color 0.3s;}
+body.light-theme {
+  --bg:#f8fafc;
+  --surface:#ffffff;
+  --surface2:#f1f5f9;
+  --border:rgba(0,0,0,0.08);
+  --text:#0f172a;
+  --text-muted:#64748b;
+}
+a{text-decoration:none;color:inherit;}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width 0.3s;overflow:hidden;}
+.sidebar.collapsed{width:64px;}
+.sb-logo{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;min-height:64px;}
+.sb-logo .logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.sb-logo .logo-text{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;}
+.sb-logo .logo-text em{color:var(--primary-light);font-style:normal;}
+.sb-user{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.sb-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden;}
+.sb-avatar img{width:100%;height:100%;object-fit:cover;}
+.sb-user-info{min-width:0;overflow:hidden;}
+.sb-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-user-role{font-size:11px;color:var(--primary-light);font-weight:500;}
+.sb-xp{padding:12px 16px;border-bottom:1px solid var(--border);}
+.xp-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:6px;}
+.xp-bar{height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--cyan));border-radius:3px;transition:width 1s ease;}
+nav.sb-nav{flex:1;overflow-y:auto;padding:8px;}
+.nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:12px 12px 6px;white-space:nowrap;overflow:hidden;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s;margin-bottom:2px;white-space:nowrap;overflow:hidden;}
+.nav-item:hover{background:rgba(255,255,255,0.05);}
+.nav-item.active{background:rgba(99,102,241,0.2);color:var(--primary-light);}
+.nav-item i{width:18px;text-align:center;font-size:15px;flex-shrink:0;}
+.nav-item .label{font-size:13px;font-weight:500;}
+.nav-item .badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:100px;flex-shrink:0;}
+.sb-bottom{padding:12px;border-top:1px solid var(--border);}
+.sb-bottom .nav-item{color:var(--text-muted);}
+.sb-bottom .nav-item:hover{color:var(--red);}
+
+/* ── Main ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:64px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px;background:var(--surface);flex-shrink:0;}
+.topbar-title{font-size:18px;font-weight:700;}
+.topbar-search{flex:1;max-width:400px;position:relative;}
+.topbar-search input{width:100%;padding:9px 14px 9px 36px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.topbar-search input:focus{border-color:var(--primary);}
+.topbar-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.icon-btn:hover{background:rgba(99,102,241,0.2);border-color:var(--primary);}
+.icon-btn .notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--surface);}
+.toggle-btn{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.content{flex:1;overflow-y:auto;padding:24px;}
+
+/* ── Cards & Widgets ── */
+.page{display:none;} .page.active{display:block;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all 0.2s;}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.15);}
+.stat-card .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.stat-card .stat-value{font-size:28px;font-weight:800;margin-bottom:4px;}
+.stat-card .stat-label{font-size:12px;color:var(--text-muted);font-weight:500;}
+.stat-card .stat-change{font-size:11px;margin-top:6px;}
+.stat-card .stat-change.up{color:var(--green);}
+.stat-card .stat-change.down{color:var(--red);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px;margin-bottom:20px;}
+.widget{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.widget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.widget-title{font-size:15px;font-weight:700;}
+.widget-link{font-size:12px;color:var(--primary-light);cursor:pointer;}
+.widget-link:hover{color:#fff;}
+.jobseeker-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:20px;}
+.jobseeker-tool{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:190px;transition:all 0.2s;}
+.jobseeker-tool:hover{transform:translateY(-2px);border-color:rgba(6,182,212,0.45);background:rgba(6,182,212,0.06);}
+.jobseeker-tool .tool-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+.jobseeker-tool h3{font-size:15px;font-weight:800;}
+.jobseeker-tool p{font-size:12.5px;color:var(--text-muted);line-height:1.5;flex:1;}
+.jobseeker-tool .tool-action{align-self:flex-start;}
+/* Course cards */
+.course-list{display:flex;flex-direction:column;gap:12px;}
+.course-row{display:flex;align-items:center;gap:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);transition:all 0.2s;cursor:pointer;}
+.course-row:hover{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);}
+.course-thumb{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.course-info{flex:1;min-width:0;}
+.course-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.course-info .meta{font-size:11px;color:var(--text-muted);margin-bottom:6px;}
+.progress-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--cyan));}
+.progress-pct{font-size:11px;color:var(--primary-light);font-weight:600;white-space:nowrap;}
+/* Quiz Cards */
+.quiz-list{display:flex;flex-direction:column;gap:10px;}
+.quiz-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);}
+.quiz-row .icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.quiz-row h4{font-size:13px;font-weight:600;margin-bottom:2px;}
+.quiz-row .meta{font-size:11px;color:var(--text-muted);}
+.btn-sm{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-primary-sm{background:var(--primary);color:#fff;}
+.btn-primary-sm:hover{background:var(--primary-dark);}
+.btn-outline-sm{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+.btn-outline-sm:hover{border-color:var(--primary);color:#fff;}
+/* Leaderboard */
+.lb-list{display:flex;flex-direction:column;gap:8px;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;transition:all 0.2s;}
+.lb-row:hover{background:rgba(255,255,255,0.04);}
+.lb-rank{width:24px;text-align:center;font-size:13px;font-weight:700;color:var(--text-muted);}
+.lb-rank.gold{color:var(--accent);}
+.lb-rank.silver{color:#94a3b8;}
+.lb-rank.bronze{color:#b45309;}
+.lb-avatar{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+.lb-name{flex:1;font-size:13px;font-weight:500;}
+.lb-xp{font-size:12px;font-weight:700;color:var(--primary-light);}
+/* AI Chat */
+.ai-chat{display:flex;flex-direction:column;height:420px;}
+.ai-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:4px;}
+.ai-msg{max-width:85%;}
+.ai-msg.user{align-self:flex-end;}
+.ai-bubble{padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.6;}
+.ai-msg.bot .ai-bubble{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-bottom-left-radius:4px;}
+.ai-msg.user .ai-bubble{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-bottom-right-radius:4px;}
+.ai-input-row{display:flex;gap:8px;margin-top:12px;}
+.ai-input{flex:1;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.ai-input:focus{border-color:var(--primary);}
+.ai-send{width:38px;height:38px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-send:hover{opacity:0.9;}
+/* Live Classes */
+.live-list{display:flex;flex-direction:column;gap:10px;}
+.live-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);}
+.live-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.live-dot.live{background:var(--red);animation:pulse 1s infinite;}
+.live-dot.soon{background:var(--accent);}
+.live-dot.recorded{background:var(--text-muted);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+/* Badges */
+.badges-wrap{display:flex;flex-wrap:wrap;gap:10px;}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.03);min-width:70px;}
+.badge-item .bi{font-size:26px;}
+.badge-item .bn{font-size:10px;color:var(--text-muted);text-align:center;}
+/* Notifications */
+.notif-list{display:flex;flex-direction:column;gap:10px;}
+.notif-item{padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.03);display:flex;gap:12px;}
+.notif-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.notif-body h5{font-size:13px;font-weight:600;margin-bottom:3px;}
+.notif-body p{font-size:12px;color:var(--text-muted);}
+.notif-time{font-size:11px;color:var(--text-muted);margin-left:auto;flex-shrink:0;}
+/* Empty State */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-state .emoji{font-size:48px;margin-bottom:12px;}
+.empty-state h4{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.empty-state p{font-size:13px;}
+/* Responsive */
+@media(max-width:1200px){.stats-row{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.sidebar{position:fixed;z-index:100;height:100vh;}.grid-2,.grid-3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">Skills Sharp <em>365</em></div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-avatar" id="sb-avatar">A</div>
+    <div class="sb-user-info">
+      <div class="sb-user-name" id="sb-name">Loading...</div>
+      <div class="sb-user-role">Student</div>
+    </div>
+  </div>
+  <div class="sb-xp">
+    <div class="xp-label"><span>⚡ XP Progress</span><span id="xp-label">0 / 100</span></div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="fas fa-home"></i><span class="label">Dashboard</span></div>
+    <div class="nav-item" onclick="showPage('courses-page',this)"><i class="fas fa-book-open"></i><span class="label">My Courses</span></div>
+    <div class="nav-item" onclick="showPage('ai-page',this)"><i class="fas fa-brain"></i><span class="label">AI Tutor</span></div>
+    <div class="nav-item" onclick="showPage('live-page',this)"><i class="fas fa-video"></i><span class="label">Live Classes</span></div>
+
+    <div class="nav-section">Learn</div>
+    <div class="nav-item" onclick="showPage('quiz-page',this)"><i class="fas fa-question-circle"></i><span class="label">Quizzes</span></div>
+    <div class="nav-item" onclick="showPage('assignments-page',this)"><i class="fas fa-file-alt"></i><span class="label">Assignments</span></div>
+    <div class="nav-item" onclick="showPage('study-plan-page',this)"><i class="fas fa-calendar-check"></i><span class="label">Study Plan</span></div>
+
+    <div class="nav-section">Ecosystem</div>
+    <div class="nav-item" onclick="showPage('school-page',this)"><i class="fas fa-school"></i><span class="label">School Module</span></div>
+    <div class="nav-item" onclick="showPage('college-page',this)"><i class="fas fa-university"></i><span class="label">College Streams</span></div>
+    <div class="nav-item" onclick="showPage('ide-page',this)"><i class="fas fa-laptop-code"></i><span class="label">Coding Lab IDE</span></div>
+    <div class="nav-item" onclick="showPage('interview-page',this)"><i class="fas fa-microphone-alt"></i><span class="label">AI Interview Prep</span></div>
+    <div class="nav-item" onclick="showPage('communication-page',this)"><i class="fas fa-bullhorn"></i><span class="label">Classroom Feed</span></div>
+    <div class="nav-item" onclick="showPage('resources-page',this)"><i class="fas fa-layer-group"></i><span class="label">Resource Hub</span></div>
+    <div class="nav-item" onclick="showPage('projects-page',this)"><i class="fas fa-project-diagram"></i><span class="label">Project Catalog</span></div>
+    <div class="nav-item" onclick="showPage('groups-page',this)"><i class="fab fa-whatsapp"></i><span class="label">Group Chat</span></div>
+
+    <div class="nav-section">Achievements</div>
+    <div class="nav-item" onclick="showPage('certs-page',this)"><i class="fas fa-certificate"></i><span class="label">Certificates</span></div>
+    <div class="nav-item" onclick="showPage('leaderboard-page',this)"><i class="fas fa-trophy"></i><span class="label">Leaderboard</span></div>
+    <div class="nav-item" onclick="showPage('analytics-page',this)"><i class="fas fa-chart-bar"></i><span class="label">Analytics</span></div>
+
+    <div class="nav-section">More</div>
+    <div class="nav-item" onclick="showPage('jobseekers-page',this)"><i class="fas fa-user-tie"></i><span class="label">Jobseekers</span></div>
+    <div class="nav-item" onclick="showPage('career-page',this)"><i class="fas fa-briefcase"></i><span class="label">Career Portal</span></div>
+    <div class="nav-item" onclick="showPage('chat-page',this)"><i class="fas fa-comments"></i><span class="label">Messages</span></div>
+    <div class="nav-item" onclick="showPage('notif-page',this)"><i class="fas fa-bell"></i><span class="label">Notifications</span><span class="badge" id="notif-badge" style="display:none">0</span></div>
+  </nav>
+
+  <div class="sb-bottom">
+    <a href="/profile" class="nav-item"><i class="fas fa-user-circle"></i><span class="label">Profile</span></a>
+    <a href="/" class="nav-item"><i class="fas fa-home"></i><span class="label">Home Page</span></a>
+    <div class="nav-item" onclick="logout()" style="color:var(--red)"><i class="fas fa-sign-out-alt"></i><span class="label">Logout</span></div>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    <span class="topbar-title" id="page-title">Dashboard</span>
+    <div class="topbar-search">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search courses, quizzes...">
+    </div>
+    <div class="topbar-actions">
+      <div class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></div>
+      <div class="icon-btn" onclick="showPage('notif-page')"><i class="fas fa-bell" style="font-size:15px"></i><div class="notif-dot" id="notif-dot" style="display:none"></div></div>
+      <a href="/courses" class="btn-primary-sm btn-sm"><i class="fas fa-plus"></i> Browse Courses</a>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ── Dashboard Page ── -->
+    <div id="dashboard" class="page active">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.2)">📚</div><div class="stat-value" id="stat-enrolled">-</div><div class="stat-label">Enrolled Courses</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.2)">✅</div><div class="stat-value" id="stat-completed">-</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.2)">⚡</div><div class="stat-value" id="stat-xp">-</div><div class="stat-label">Total XP</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(239,68,68,0.2)">🔥</div><div class="stat-value" id="stat-streak">-</div><div class="stat-label">Day Streak</div></div>
+      </div>
+
+      <div class="grid-3">
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">📚 Continue Learning</span><span class="widget-link" onclick="showPage('courses-page')">View All →</span></div>
+          <div class="course-list" id="enrolled-courses"><div class="empty-state"><div class="emoji">📚</div><h4>No courses yet</h4><p>Browse and enroll in courses to get started!</p></div></div>
+        </div>
+        <div class="widget" style="grid-column:span 2">
+          <div class="widget-header"><span class="widget-title">🤖 AI Tutor</span><span class="widget-link" onclick="showPage('ai-page')">Full Chat →</span></div>
+          <div class="ai-chat">
+            <div class="ai-messages" id="quick-ai-messages">
+              <div class="ai-msg bot"><div class="ai-bubble">👋 Hi! I'm your AI tutor powered by LangChain + RAG. Ask me anything about your courses!</div></div>
+            </div>
+            <div class="ai-input-row">
+              <input class="ai-input" id="quick-ai-input" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter')quickAskAI()">
+              <button class="ai-send" onclick="quickAskAI()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">📅 Upcoming Live Classes</span><span class="widget-link" onclick="showPage('live-page')">View All →</span></div>
+          <div class="live-list" id="upcoming-classes"><div class="empty-state"><div class="emoji">📹</div><h4>No upcoming classes</h4><p>Enroll in courses to see live class schedules.</p></div></div>
+        </div>
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">🏆 Leaderboard</span><span class="widget-link" onclick="showPage('leaderboard-page')">View All →</span></div>
+          <div class="lb-list" id="leaderboard-preview"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">🎯 Pending Quizzes</span></div>
+          <div class="quiz-list" id="quiz-list"><div class="empty-state"><div class="emoji">✅</div><h4>All caught up!</h4><p>No pending quizzes right now.</p></div></div>
+        </div>
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">🏅 My Badges</span></div>
+          <div class="badges-wrap" id="badges-wrap"><div style="color:var(--text-muted);font-size:13px">No badges yet — start learning to earn them!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Courses Page ── -->
+    <div id="courses-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">My Courses</span><a href="/courses" class="btn-primary-sm btn-sm"><i class="fas fa-plus"></i> Browse More</a></div>
+      <div id="my-courses-grid" class="course-list"></div>
+    </div>
+
+    <!-- ── AI Tutor Page ── -->
+    <div id="ai-page" class="page">
+      <div style="display:flex;gap:20px;height:calc(100vh - 150px)">
+        <div class="widget" style="width:260px;flex-shrink:0;display:flex;flex-direction:column">
+          <div class="widget-header"><span class="widget-title">💬 Sessions</span><button class="btn-primary-sm btn-sm" onclick="newAISession()"><i class="fas fa-plus"></i></button></div>
+          <div id="ai-sessions" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="widget" style="flex:1;display:flex;flex-direction:column">
+          <div class="widget-header">
+            <span class="widget-title">🤖 AI Tutor — LangChain + RAG</span>
+            <span style="font-size:11px;color:var(--primary-light);background:rgba(99,102,241,0.15);padding:4px 10px;border-radius:100px">● RAG Active</span>
+          </div>
+          <div class="ai-messages" id="ai-messages" style="flex:1;overflow-y:auto;gap:14px;display:flex;flex-direction:column;padding-bottom:8px">
+            <div class="ai-msg bot"><div class="ai-bubble">🤖 I'm your AI Tutor powered by LangChain and Retrieval-Augmented Generation. I can read your uploaded course notes and answer questions with accurate, context-aware responses. What would you like to learn today?</div></div>
+          </div>
+          <div class="ai-input-row" style="margin-top:12px">
+            <input class="ai-input" id="ai-input" placeholder="Ask anything about your courses..." onkeypress="if(event.key==='Enter')sendAI()">
+            <button class="ai-send" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Study Plan Page ── -->
+    <div id="study-plan-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">📅 AI Study Planner</span>
+        <button class="btn-primary-sm btn-sm" onclick="openStudyPlanModal()"><i class="fas fa-magic"></i> Generate AI Plan</button>
+      </div>
+      <div id="study-plans-list"></div>
+    </div>
+
+    <!-- ── Certificates Page ── -->
+    <div id="certs-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">🎓 My Certificates</span></div>
+      <div id="certs-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px"></div>
+    </div>
+
+    <!-- ── Leaderboard Page ── -->
+    <div id="leaderboard-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">🏆 Global Leaderboard</span></div>
+      <div class="widget"><div class="lb-list" id="full-leaderboard"></div></div>
+    </div>
+
+    <!-- ── Analytics Page ── -->
+    <div id="analytics-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">📊 Learning Analytics</span></div>
+      <div class="stats-row" id="analytics-stats"></div>
+      <div class="grid-2">
+        <div class="widget"><div class="widget-header"><span class="widget-title">Quiz Performance</span></div><canvas id="quiz-chart" height="200"></canvas></div>
+        <div class="widget"><div class="widget-header"><span class="widget-title">Course Progress</span></div><canvas id="progress-chart" height="200"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ── Notifications Page ── -->
+    <div id="notif-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🔔 Notifications</span>
+        <button class="btn-outline-sm btn-sm" onclick="markAllRead()">Mark All Read</button>
+      </div>
+      <div class="widget"><div class="notif-list" id="notif-list"></div></div>
+    </div>
+
+    <!-- ── Live Classes Page ── -->
+    <div id="live-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">📹 Live Classes</span></div>
+      <div class="widget"><div class="live-list" id="all-live-classes"></div></div>
+    </div>
+
+    <!-- ── Career Page ── -->
+    <div id="jobseekers-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">ðŸ’¼ Jobseekers Career Prep</span>
+        <button class="btn-primary-sm btn-sm" onclick="showPage('interview-page')"><i class="fas fa-video"></i> Start AI Interview</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(6,182,212,0.2)"><i class="fas fa-file-lines"></i></div><div class="stat-value">Resume</div><div class="stat-label">Create, improve, and export</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.2)"><i class="fas fa-chart-line"></i></div><div class="stat-value">ATS</div><div class="stat-label">Score and gap analysis</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.2)"><i class="fas fa-code"></i></div><div class="stat-value">Coding</div><div class="stat-label">AI assessment practice</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,0.2)"><i class="fas fa-headset"></i></div><div class="stat-value">Interview</div><div class="stat-label">Video and telephonic prep</div></div>
+      </div>
+
+      <div class="jobseeker-tools">
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#06b6d4,#0f766e)"><i class="fas fa-file-circle-plus"></i></div><h3>Resume Builder</h3><p>Create an AI-generated resume from your profile, completed courses, skills, and project experience.</p><button class="btn-primary-sm btn-sm tool-action" onclick="showJobseekerResumeBuilder()"><i class="fas fa-wand-magic-sparkles"></i> Create Resume</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#10b981,#047857)"><i class="fas fa-magnifying-glass-chart"></i></div><h3>Resume Analysis</h3><p>Review your resume against a target role and get focused improvement suggestions.</p><button class="btn-outline-sm btn-sm tool-action" onclick="showJobseekerResumeAnalysis()"><i class="fas fa-arrow-right"></i> Analyze Resume</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-gauge-high"></i></div><h3>ATS Score</h3><p>Run an ATS scan for keyword match, missing skills, readiness score, and recommended course gaps.</p><button class="btn-outline-sm btn-sm tool-action" onclick="showJobseekerAtsScore()"><i class="fas fa-arrow-right"></i> Run ATS Score</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)"><i class="fas fa-people-arrows"></i></div><h3>Face-to-Face AI Interview</h3><p>Practice a face-to-face AI-generated interview with recruiter-style questions and feedback.</p><button class="btn-primary-sm btn-sm tool-action" onclick="openJobseekerInterviewTool('face')"><i class="fas fa-video"></i> Practice</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5)"><i class="fas fa-circle-question"></i></div><h3>AI Quiz Generator</h3><p>Generate job-readiness quizzes for aptitude, domain knowledge, and role-based practice.</p><button class="btn-outline-sm btn-sm tool-action" onclick="showJobseekerQuizGenerator()"><i class="fas fa-list-check"></i> Generate Quiz</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><i class="fas fa-laptop-code"></i></div><h3>AI Coding Assessment</h3><p>Use the coding lab for timed practice, AI code review, debugging, and assessment preparation.</p><button class="btn-outline-sm btn-sm tool-action" onclick="showJobseekerCodingAssessment()"><i class="fas fa-code"></i> Generate Assessment</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#14b8a6,#0f766e)"><i class="fas fa-user-shield"></i></div><h3>AI Mock Interview</h3><p>Run a structured AI mock interview with technical, behavioral, and HR questions.</p><button class="btn-primary-sm btn-sm tool-action" onclick="openJobseekerInterviewTool('mock')"><i class="fas fa-play"></i> Start Mock</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#f97316,#c2410c)"><i class="fas fa-video"></i></div><h3>Proctored Video Interview</h3><p>Practice webcam-based interview flow with simulated eye-contact and confidence tracking.</p><button class="btn-outline-sm btn-sm tool-action" onclick="openJobseekerInterviewTool('proctored')"><i class="fas fa-camera"></i> Open Video Prep</button></div>
+        <div class="jobseeker-tool"><div class="tool-icon" style="background:linear-gradient(135deg,#64748b,#334155)"><i class="fas fa-phone-volume"></i></div><h3>Telephonic Interview</h3><p>Prepare answers for phone screens, recruiter calls, salary questions, and HR introductions.</p><button class="btn-outline-sm btn-sm tool-action" onclick="showJobseekerPhonePrep()"><i class="fas fa-phone"></i> Prepare</button></div>
+      </div>
+
+      <div class="widget" id="jobseeker-output">
+        <div class="widget-header"><span class="widget-title">Career Prep Output</span></div>
+        <div style="font-size:13px;color:var(--text-muted);line-height:1.6">Choose a Jobseeker tool above to generate resumes, prepare interviews, or open the matching practice module.</div>
+      </div>
+    </div>
+
+    <div id="career-page" class="page">
+    <div id="assignments-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px"><span style="font-size:20px;font-weight:800">📋 Assignments</span></div>
+      <div id="assignments-list"></div>
+    </div>
+
+    </div>
+
+    <!-- ── Resources Page ── -->
+    <div id="resources-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">📚 Smart Resource Hub</span>
+        <div class="topbar-search" style="margin-left:auto;margin-right:10px">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search C++, Law, Science...">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="widget">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">💻</div>
+            <div><strong>LeetCode 150 List</strong><div style="font-size:12px;color:var(--text-muted)">C++ & Java Solutions</div></div>
+          </div>
+          <a href="#" class="btn-primary-sm btn-sm">View Resource</a>
+        </div>
+        <div class="widget">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">⚖️</div>
+            <div><strong>Constitutional Law Notes</strong><div style="font-size:12px;color:var(--text-muted)">Semester 3</div></div>
+          </div>
+          <a href="#" class="btn-primary-sm btn-sm">View Resource</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Projects Page ── -->
+    <div id="projects-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🚀 Project-Based Learning</span>
+      </div>
+      <div class="grid-2">
+        <div class="widget">
+          <h3 style="margin-bottom:8px">Build a Full-Stack LMS</h3>
+          <span class="badge badge-green" style="margin-bottom:12px">Advanced</span> <span class="badge" style="margin-bottom:12px">Web Dev</span>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Learn Next.js, FastAPI, and Postgres by building a real LMS.</p>
+          <button class="btn-primary-sm btn-sm"><i class="fas fa-play"></i> Start Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Groups Page ── -->
+    <div id="groups-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">💬 Batch Group Chats</span>
+      </div>
+      <div class="grid-2">
+        <div class="widget" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:400px">
+          <div style="padding:16px;background:rgba(99,102,241,0.1);border-bottom:1px solid var(--border)">
+            <strong>CS Semester 1 Batch</strong>
+          </div>
+          <div style="flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px" id="group-chat-messages">
+            <div style="font-size:12px"><strong style="color:var(--primary-light)">Admin:</strong> Welcome to the batch group!</div>
+          </div>
+          <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px">
+            <input type="text" id="group-chat-input" class="ai-input" placeholder="Message group..." style="flex:1" onkeypress="if(event.key==='Enter')sendGroupMsg()">
+            <button class="ai-send" onclick="sendGroupMsg()"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── School Education Module ── -->
+    <div id="school-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🏫 School Education Module</span>
+        <select id="school-grade-select" class="ai-input" style="max-width:200px;background:var(--surface2);" onchange="loadSchoolSubjects(this.value)">
+          <option value="Class 10" selected>Class 10</option>
+          <option value="Class 11">Class 11</option>
+          <option value="Class 12">Class 12</option>
+          <option value="Class 9">Class 9</option>
+          <option value="Class 8">Class 8</option>
+          <option value="Class 7">Class 7</option>
+          <option value="Class 6">Class 6</option>
+          <option value="Class 5">Class 5</option>
+          <option value="Class 4">Class 4</option>
+          <option value="Class 3">Class 3</option>
+          <option value="Class 2">Class 2</option>
+          <option value="Class 1">Class 1</option>
+        </select>
+      </div>
+      
+      <div class="grid-2">
+        <div class="widget" style="max-height:480px;overflow-y:auto;">
+          <div class="widget-header"><span class="widget-title">📚 Subjects</span></div>
+          <div id="school-subjects-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+        
+        <div class="widget" id="school-subject-details" style="display:none;">
+          <div class="widget-header"><span class="widget-title" id="school-subject-title">Subject Details</span></div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary-sm btn-sm" onclick="showSchoolSection('notes')">📖 Notes & Resources</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="showSchoolSection('lectures')">🎥 Video Lectures</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="showSchoolSection('ai-tutor')">🤖 AI Tutor Chat</button>
+            </div>
+            
+            <div id="school-notes-section" class="school-sec">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Notes & Resources</div>
+              <div id="school-notes-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+            </div>
+            
+            <div id="school-lectures-section" class="school-sec" style="display:none;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Lectures & Videos</div>
+              <div id="school-lectures-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+            </div>
+            
+            <div id="school-ai-tutor-section" class="school-sec" style="display:none;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">AI Doubts Solver</div>
+              <div style="display:flex;flex-direction:column;gap:10px;height:240px;background:rgba(0,0,0,0.2);border-radius:10px;padding:12px;overflow-y:auto;" id="school-ai-messages">
+                <div style="font-size:12px;color:var(--primary-light);">🤖 Hello! Ask me any doubt about this subject.</div>
+              </div>
+              <div class="ai-input-row" style="margin-top:10px;">
+                <input class="ai-input" id="school-ai-input" placeholder="Ask a doubt..." onkeypress="if(event.key==='Enter')askSchoolAI()">
+                <button class="ai-send" onclick="askSchoolAI()"><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── College Education Module ── -->
+    <div id="college-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🎓 College Streams & Semesters</span>
+        <div style="display:flex;gap:10px;">
+          <select id="college-stream-select" class="ai-input" style="max-width:180px;background:var(--surface2);" onchange="loadCollegeSubjects()">
+            <option value="BTech CSE" selected>BTech CSE</option>
+            <option value="BCA">BCA</option>
+            <option value="MCA">MCA</option>
+            <option value="BBA">BBA</option>
+            <option value="MBA">MBA</option>
+            <option value="BCom">BCom</option>
+            <option value="Law (LLB)">Law (LLB)</option>
+            <option value="Medical (MBBS)">Medical (MBBS)</option>
+          </select>
+          <select id="college-semester-select" class="ai-input" style="max-width:120px;background:var(--surface2);" onchange="loadCollegeSubjects()">
+            <option value="Semester 1" selected>Semester 1</option>
+            <option value="Semester 2">Semester 2</option>
+            <option value="Semester 3">Semester 3</option>
+            <option value="Semester 4">Semester 4</option>
+            <option value="Semester 5">Semester 5</option>
+            <option value="Semester 6">Semester 6</option>
+            <option value="Semester 7">Semester 7</option>
+            <option value="Semester 8">Semester 8</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="grid-2">
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">📚 Course Syllabus</span></div>
+          <div id="college-subjects-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+        
+        <div class="widget" id="college-subject-details" style="display:none;">
+          <div class="widget-header"><span class="widget-title" id="college-subject-title">Syllabus Details</span></div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary-sm btn-sm" onclick="showCollegeSection('notes')">📖 Course Books & Notes</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="showCollegeSection('lectures')">🎥 Lectures</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="showCollegeSection('ai-tutor')">🤖 Course AI Guide</button>
+            </div>
+            
+            <div id="college-notes-section" class="college-sec">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Resources & Books</div>
+              <div id="college-notes-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+            </div>
+            
+            <div id="college-lectures-section" class="college-sec" style="display:none;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Lectures</div>
+              <div id="college-lectures-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+            </div>
+            
+            <div id="college-ai-tutor-section" class="college-sec" style="display:none;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">AI Subject Assistant</div>
+              <div style="display:flex;flex-direction:column;gap:10px;height:240px;background:rgba(0,0,0,0.2);border-radius:10px;padding:12px;overflow-y:auto;" id="college-ai-messages">
+                <div style="font-size:12px;color:var(--primary-light);">🤖 How can I help you today with your college course?</div>
+              </div>
+              <div class="ai-input-row" style="margin-top:10px;">
+                <input class="ai-input" id="college-ai-input" placeholder="Ask course doubt..." onkeypress="if(event.key==='Enter')askCollegeAI()">
+                <button class="ai-send" onclick="askCollegeAI()"><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Coding Lab (Cloud IDE) ── -->
+    <div id="ide-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">💻 Coding & Development Lab</span>
+        <div style="display:flex;gap:10px;">
+          <select id="ide-lang" class="ai-input" style="max-width:150px;background:var(--surface2);">
+            <option value="python" selected>Python 3</option>
+            <option value="javascript">JavaScript (Node)</option>
+            <option value="java">Java 17</option>
+            <option value="c++">C++ (GCC)</option>
+            <option value="sql">SQL Select</option>
+            <option value="go">Go Lang</option>
+            <option value="rust">Rust</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="runIdeCode()"><i class="fas fa-play"></i> Run Code</button>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:20px;height:calc(100vh - 200px)">
+        <div class="widget" style="flex:2;display:flex;flex-direction:column;gap:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;color:var(--text-muted);">editor.workspace</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline-sm btn-sm" onclick="triggerIdeAssist('debug')">🤖 AI Debug Code</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="triggerIdeAssist('review')">📝 AI Review Code</button>
+              <button class="btn btn-outline-sm btn-sm" onclick="triggerIdeAssist('explain')">💡 Explain</button>
+            </div>
+          </div>
+          <textarea id="ide-editor" style="flex:1;background:#0d061f;border:1px solid var(--border);border-radius:10px;color:#a5b4fc;font-family:'Courier New',Courier,monospace;font-size:14px;padding:16px;resize:none;outline:none;" placeholder="Write your code here..."># Code Lab workspace
+def greeting(name):
+    print("Welcome to Skill Sharp 365 Coding Lab, " + name + "!")
+
+greeting("Akarsh")
+</textarea>
+          
+          <div style="height:140px;background:#030008;border-radius:10px;padding:12px;display:flex;flex-direction:column;border:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;font-weight:700;">stdout terminal output</div>
+            <div id="ide-console" style="flex:1;overflow-y:auto;color:#10b981;font-family:'Courier New',Courier,monospace;font-size:13px;white-space:pre-wrap;">Terminal output will appear here after clicking "Run Code"...</div>
+          </div>
+        </div>
+        
+        <div class="widget" style="flex:1;display:flex;flex-direction:column;">
+          <div class="widget-header"><span class="widget-title">🤖 AI Code Lab Advisor</span></div>
+          <div id="ide-ai-panel" style="flex:1;overflow-y:auto;font-size:13px;line-height:1.6;color:var(--primary-light);background:rgba(0,0,0,0.15);padding:14px;border-radius:10px;border:1px solid var(--border)">
+            Request AI analysis or debugging feedback to display tips here!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AI Interview Prep ── -->
+    <div id="interview-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🎙️ AI Video Interview Preparation</span>
+      </div>
+      
+      <div class="grid-2">
+        <div class="widget" id="interview-setup">
+          <div class="widget-header"><span class="widget-title">📋 Target Role & Resume Upload</span></div>
+          <div class="form-group"><label>Target Job Description (JD)</label><textarea id="interview-jd" class="form-control" rows="4" placeholder="Paste the target job description here..."></textarea></div>
+          <div class="form-group"><label>Your Resume details</label><textarea id="interview-resume" class="form-control" rows="6" placeholder="Paste your resume qualifications here..."></textarea></div>
+          
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline" style="flex:1" onclick="runAtsAnalysis()"><i class="fas fa-chart-line"></i> Run ATS Scan</button>
+            <button class="btn btn-primary" style="flex:1" onclick="startInterviewSession()"><i class="fas fa-play"></i> Start Video Simulator</button>
+          </div>
+        </div>
+        
+        <div class="widget" id="interview-sim" style="display:none;position:relative;">
+          <div class="widget-header"><span class="widget-title">🔴 Live Simulation Active</span><button class="btn btn-danger btn-sm" onclick="endInterviewSim()">Stop Session</button></div>
+          
+          <div style="height:220px;background:#050012;border-radius:14px;border:1px solid var(--border);position:relative;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;">
+            <video id="interview-video" autoplay muted style="width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none;"></video>
+            <div id="interview-video-fallback" style="text-align:center;color:var(--text-muted);">
+              <i class="fas fa-camera" style="font-size:32px;margin-bottom:8px;color:var(--red);"></i>
+              <div>Simulating Camera & Microphone feed...</div>
+            </div>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);padding:4px 8px;border-radius:6px;font-size:11px;color:var(--green)">
+              <i class="fas fa-eye"></i> Eye Contact: <span id="sim-eye-val">95%</span>
+            </div>
+            <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.7);padding:4px 8px;border-radius:6px;font-size:11px;color:var(--accent)">
+              <i class="fas fa-heartbeat"></i> Confidence: <span id="sim-conf-val">88%</span>
+            </div>
+          </div>
+          
+          <div style="height:120px;overflow-y:auto;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;line-height:1.6;margin-bottom:14px;" id="sim-chat-box">
+            AI Recruiters: Session started.
+          </div>
+          
+          <div class="ai-input-row">
+            <input class="ai-input" id="sim-answer-input" placeholder="Type your answer here..." onkeypress="if(event.key==='Enter')submitSimAnswer()">
+            <button class="ai-send" onclick="submitSimAnswer()"><i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        
+        <div class="widget" id="interview-reports">
+          <div class="widget-header"><span class="widget-title">📊 Scorecard Analysis Report</span></div>
+          <div id="interview-reports-panel" style="font-size:13px;line-height:1.6;white-space:pre-wrap;max-height:480px;overflow-y:auto;">
+            Ready to review. Upload Resume and JD to run ATS scan or start a simulated interview!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Class Communication Portal ── -->
+    <div id="communication-page" class="page">
+      <div class="widget-header" style="margin-bottom:20px">
+        <span style="font-size:20px;font-weight:800">🗣️ Classroom Feed & Communication Board</span>
+      </div>
+      
+      <div class="grid-2">
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">📣 Classroom Feed Feed</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:16px;">
+            <input class="ai-input" id="feed-post-text" placeholder="Share note or document link with class...">
+            <button class="btn btn-primary" onclick="createFeedPost()">Post Announcement</button>
+          </div>
+          <div id="feed-posts-list" style="display:flex;flex-direction:column;gap:12px;max-height:480px;overflow-y:auto;">
+            <div style="padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.03);">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:13px;color:var(--primary-light);">Prof. Sarah Jenkins (Instructor)</strong><span style="font-size:11px;color:var(--text-muted);">2h ago</span></div>
+              <p style="font-size:12.5px;line-height:1.5;">Welcome to BTech Computer Science Semester 1! Notes for our programming lab are uploaded. Please review them before the live class.</p>
+            </div>
+            <div style="padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.03);">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:13px;color:var(--primary-light);">Akarsh Chaturvedi</strong><span style="font-size:11px;color:var(--text-muted);">5h ago</span></div>
+              <p style="font-size:12.5px;line-height:1.5;">Does anyone want to form a study group for coding practice? Feel free to reach out in direct messages!</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="widget">
+          <div class="widget-header"><span class="widget-title">💬 Interactive Group Chat</span></div>
+          <div style="height:320px;overflow-y:auto;background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;" id="group-chat-messages">
+            <div style="font-size:11px;color:var(--primary-light);background:rgba(99,102,241,0.1);padding:6px;border-radius:6px;text-align:center;">👥 Joined Skill Sharp 365 study group discussion feed</div>
+            <div style="font-size:12px;"><strong style="color:var(--accent);">John:</strong> Hey guys! What's the deadline for the backend assignment?</div>
+            <div style="font-size:12px;"><strong style="color:var(--green);">Emma:</strong> It is scheduled for Friday by midnight.</div>
+          </div>
+          <div class="ai-input-row" style="margin-top:12px;">
+            <input class="ai-input" id="group-chat-input" placeholder="Post a chat message..." onkeypress="if(event.key==='Enter')sendGroupMsg()">
+            <button class="ai-send" onclick="sendGroupMsg()"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating AI Assistant Widget -->
+    <div id="floating-ai-btn" onclick="toggleFloatingAI()" style="position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));box-shadow:0 10px 25px rgba(99,102,241,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:999;font-size:24px;color:#fff;transition:transform 0.2s;">
+      💬
+    </div>
+
+    <div id="floating-ai-card" style="display:none;position:fixed;bottom:90px;right:24px;width:340px;height:460px;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(20px);z-index:999;flex-direction:column;overflow:hidden;">
+      <div style="padding:14px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span>🤖</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#fff;">Skill Sharp AI</div>
+            <div style="font-size:10px;color:var(--green)">● Online Assistant</div>
+          </div>
+        </div>
+        <select id="ai-lang-select" style="background:var(--surface2);color:#fff;border:none;border-radius:6px;font-size:10px;padding:4px;outline:none;" onchange="changeAILang()">
+          <option value="English" selected>English</option>
+          <option value="Hindi">Hindi (हिंदी)</option>
+          <option value="Gujarati">Gujarati (ગુજરાતી)</option>
+          <option value="Marathi">Marathi (मराठी)</option>
+          <option value="Tamil">Tamil (தமிழ்)</option>
+          <option value="Telugu">Telugu (తెలుగు)</option>
+          <option value="Bengali">Bengali (বাংলা)</option>
+          <option value="Punjabi">Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="Kannada">Kannada (ಕನ್ನಡ)</option>
+          <option value="Malayalam">Malayalam (മലയാളം)</option>
+        </select>
+      </div>
+      
+      <div style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;" id="floating-ai-messages">
+        <div style="font-size:12px;background:rgba(99,102,241,0.15);padding:10px;border-radius:10px;color:var(--primary-light);line-height:1.5;">
+          👋 Hello! I'm Skill Sharp AI, your global assistant. Ask me to:
+          <br>1. Explain a concept
+          <br>2. Generate dynamic Quizzes & Flashcards
+          <br>3. Create a Mind Map hierarchical summary
+        </div>
+      </div>
+      
+      <div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:8px;">
+        <input id="floating-ai-input" class="ai-input" placeholder="Type concept or doubt..." onkeypress="if(event.key==='Enter')sendFloatingAI()">
+        <button class="ai-send" onclick="sendFloatingAI()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Study Plan Modal -->
+<div id="sp-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:480px">
+    <h3 style="margin-bottom:20px;font-size:18px">🧠 Generate AI Study Plan</h3>
+    <div style="margin-bottom:16px"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:8px">Your Learning Goal</label><input id="sp-goal" placeholder="e.g. Become a full-stack developer" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;outline:none;font-family:inherit"></div>
+    <div style="margin-bottom:16px"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:8px">Target Completion Date</label><input id="sp-date" type="date" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;outline:none;font-family:inherit"></div>
+    <div style="margin-bottom:20px"><label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:8px">Weekly Study Hours: <span id="sp-hours-val">5</span></label><input id="sp-hours" type="range" min="1" max="40" value="5" style="width:100%;accent-color:var(--primary)" oninput="document.getElementById('sp-hours-val').textContent=this.value"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="document.getElementById('sp-modal').style.display='none'" style="flex:1;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);cursor:pointer;font-family:inherit">Cancel</button>
+      <button onclick="generateStudyPlan()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border:none;border-radius:10px;color:#fff;cursor:pointer;font-weight:700;font-family:inherit"><i class="fas fa-magic"></i> Generate Plan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('access_token');
+let user  = JSON.parse(localStorage.getItem('user') || 'null');
+let currentAISessionId = null;
+
+// Auth guard
+if (!token || !user || user.role !== 'student') {
+  window.location.href = '/login';
+}
+
+const headers = () => ({'Content-Type':'application/json','Authorization':`Bearer ${token}`});
+
+// ── Init ──
+document.getElementById('sb-name').textContent  = user?.name || 'Student';
+document.getElementById('sb-avatar').textContent = user?.name?.[0]?.toUpperCase() || 'S';
+
+async function init() {
+  await Promise.all([loadStats(), loadEnrolledCourses(), loadLeaderboard(), loadNotifications(), loadLiveClasses()]);
+}
+
+// ── Stats ──
+async function loadStats() {
+  try {
+    const res  = await fetch(`${API}/api/users/stats/overview`, {headers: headers()});
+    const data = await res.json();
+    document.getElementById('stat-enrolled').textContent  = data.enrolled_courses || 0;
+    document.getElementById('stat-completed').textContent = data.completed_courses || 0;
+    document.getElementById('stat-xp').textContent        = data.xp || 0;
+    document.getElementById('stat-streak').textContent    = `${data.streak_days || 0}d`;
+
+    // XP bar
+    const xp = data.xp || 0, lvl = data.level || 1;
+    const nextLvl = lvl * 100;
+    const pct = Math.min((xp % nextLvl) / nextLvl * 100, 100);
+    document.getElementById('xp-fill').style.width = pct + '%';
+    document.getElementById('xp-label').textContent = `${xp} / ${nextLvl}`;
+  } catch(e) {
+    ['stat-enrolled','stat-completed','stat-xp','stat-streak'].forEach(id => document.getElementById(id).textContent = '—');
+  }
+}
+
+// ── Enrolled Courses ──
+async function loadEnrolledCourses() {
+  try {
+    const res   = await fetch(`${API}/api/courses/enrolled`, {headers: headers()});
+    const courses = await res.json();
+    if (!courses.length) return;
+
+    const colors = ['rgba(99,102,241,0.2)','rgba(16,185,129,0.2)','rgba(245,158,11,0.2)','rgba(139,92,246,0.2)','rgba(6,182,212,0.2)'];
+    const icons  = ['📚','🎯','⚡','🧠','🌐','🔬','🎨','💻'];
+
+    const html = courses.slice(0,4).map((c,i) => `
+      <div class="course-row" onclick="window.location='/courses'">
+        <div class="course-thumb" style="background:${colors[i%colors.length]}">${icons[i%icons.length]}</div>
+        <div class="course-info">
+          <h4>${c.title}</h4>
+          <div class="meta">${c.category || 'Course'} • ${c.level}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+        </div>
+        <span class="progress-pct">${c.progress}%</span>
+      </div>`).join('');
+    document.getElementById('enrolled-courses').innerHTML = html;
+
+    // Also fill courses page
+    const full = courses.map((c,i) => `
+      <div class="course-row">
+        <div class="course-thumb" style="background:${colors[i%colors.length]}">${icons[i%icons.length]}</div>
+        <div class="course-info">
+          <h4>${c.title}</h4>
+          <div class="meta">${c.category || 'Course'} • ${c.level} • Enrolled ${new Date(c.enrolled_at).toLocaleDateString()}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+        </div>
+        <span class="progress-pct">${c.progress}%</span>
+        ${c.completed ? '<span style="color:var(--green);font-size:12px;font-weight:700;margin-left:8px">✅ Done</span>' : ''}
+      </div>`).join('');
+    document.getElementById('my-courses-grid').innerHTML = full || '<div class="empty-state"><div class="emoji">📚</div><h4>No courses enrolled</h4><p>Browse courses and start learning!</p></div>';
+  } catch(e) { console.error(e); }
+}
+
+// ── Leaderboard ──
+async function loadLeaderboard() {
+  try {
+    const res  = await fetch(`${API}/api/analytics/leaderboard?limit=5`, {headers: headers()});
+    const data = await res.json();
+    const ranks = ['gold','silver','bronze'];
+    const medals = ['🥇','🥈','🥉'];
+
+    const rows = data.map((u,i) => `
+      <div class="lb-row">
+        <span class="lb-rank ${ranks[i]||''}">${i < 3 ? medals[i] : i+1}</span>
+        <div class="lb-avatar">${u.name?.[0]?.toUpperCase()}</div>
+        <span class="lb-name">${u.name}${u.user_id === user?.id ? ' (You)' : ''}</span>
+        <span class="lb-xp">⚡ ${u.xp}</span>
+      </div>`).join('');
+    document.getElementById('leaderboard-preview').innerHTML = rows || '<div style="color:var(--text-muted);font-size:13px">No data yet</div>';
+
+    // Full page
+    const full = data.map((u,i) => `
+      <div class="lb-row">
+        <span class="lb-rank ${ranks[i]||''}" style="width:36px;font-size:16px">${i < 3 ? medals[i] : `#${i+1}`}</span>
+        <div class="lb-avatar" style="width:40px;height:40px">${u.name?.[0]?.toUpperCase()}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:600">${u.name}${u.user_id === user?.id ? ' 👈 You' : ''}</div><div style="font-size:11px;color:var(--text-muted)">Level ${u.level} • 🔥 ${u.streak_days}d streak • 🏅 ${u.badges} badges</div></div>
+        <span class="lb-xp" style="font-size:14px">⚡ ${u.xp} XP</span>
+      </div>`).join('');
+    document.getElementById('full-leaderboard').innerHTML = full || '<div class="empty-state"><div class="emoji">🏆</div><h4>No entries yet</h4></div>';
+  } catch(e) { console.error(e); }
+}
+
+// ── Notifications ──
+async function loadNotifications() {
+  try {
+    const res  = await fetch(`${API}/api/notifications/`, {headers: headers()});
+    const data = await res.json();
+    const unread = data.unread || 0;
+
+    if (unread > 0) {
+      document.getElementById('notif-dot').style.display = 'block';
+      document.getElementById('notif-badge').textContent = unread;
+      document.getElementById('notif-badge').style.display = 'inline';
+    }
+
+    const typeColors = {course:'rgba(99,102,241,0.2)',quiz:'rgba(245,158,11,0.2)',assignment:'rgba(16,185,129,0.2)',system:'rgba(139,92,246,0.2)',certificate:'rgba(6,182,212,0.2)',live_class:'rgba(239,68,68,0.2)'};
+    const typeIcons  = {course:'📚',quiz:'📝',assignment:'✅',system:'🔔',certificate:'🎓',live_class:'📹'};
+
+    const html = (data.notifications || []).map(n => `
+      <div class="notif-item" style="${!n.is_read ? 'background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2)' : ''}">
+        <div class="notif-icon" style="background:${typeColors[n.type]||'rgba(255,255,255,0.1)'}">${typeIcons[n.type]||'🔔'}</div>
+        <div class="notif-body"><h5>${n.title}</h5><p>${n.message}</p></div>
+        <span class="notif-time">${timeAgo(n.created_at)}</span>
+      </div>`).join('') || '<div class="empty-state"><div class="emoji">✅</div><h4>All caught up!</h4></div>';
+    document.getElementById('notif-list').innerHTML = html;
+  } catch(e) { console.error(e); }
+}
+
+// ── Live Classes ──
+async function loadLiveClasses() {
+  try {
+    const res     = await fetch(`${API}/api/live-class/upcoming?limit=10`, {headers: headers()});
+    const classes = await res.json();
+    const html    = classes.map(lc => `
+      <div class="live-row">
+        <div class="live-dot ${lc.status === 'live' ? 'live' : 'soon'}"></div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${lc.title}</div><div style="font-size:11px;color:var(--text-muted)">${new Date(lc.scheduled_at).toLocaleString()} • ${lc.duration_minutes}min • ${lc.platform}</div></div>
+        ${lc.meeting_url ? `<a href="${lc.meeting_url}" target="_blank" class="btn-primary-sm btn-sm"><i class="fas fa-video"></i> Join</a>` : ''}
+      </div>`).join('') || '<div class="empty-state"><div class="emoji">📹</div><h4>No upcoming classes</h4></div>';
+    document.getElementById('upcoming-classes').innerHTML = html;
+    document.getElementById('all-live-classes').innerHTML = html;
+  } catch(e) { console.error(e); }
+}
+
+// ── AI Chat ──
+async function quickAskAI() {
+  const input = document.getElementById('quick-ai-input');
+  const msg   = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  const msgs = document.getElementById('quick-ai-messages');
+  msgs.innerHTML += `<div class="ai-msg user"><div class="ai-bubble">${msg}</div></div>`;
+  msgs.innerHTML += `<div class="ai-msg bot" id="typing"><div class="ai-bubble"><span style="opacity:0.6">Thinking...</span></div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res  = await fetch(`${API}/api/ai/chat`, {
+      method:'POST', headers: headers(),
+      body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    document.getElementById('typing')?.remove();
+    msgs.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">${data.response?.replace(/\n/g,'<br>')||'...'}</div></div>`;
+    currentAISessionId = data.session_id;
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    msgs.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">Sorry, AI is temporarily unavailable.</div></div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const msg   = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  const msgs = document.getElementById('ai-messages');
+  msgs.innerHTML += `<div class="ai-msg user"><div class="ai-bubble">${msg}</div></div>`;
+  msgs.innerHTML += `<div class="ai-msg bot" id="ai-typing"><div class="ai-bubble"><i class="fas fa-circle-notch fa-spin"></i> Generating response with RAG...</div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res  = await fetch(`${API}/api/ai/chat`, {
+      method:'POST', headers: headers(),
+      body: JSON.stringify({message: msg, session_id: currentAISessionId})
+    });
+    const data = await res.json();
+    document.getElementById('ai-typing')?.remove();
+    currentAISessionId = data.session_id;
+    msgs.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">${data.response?.replace(/\n/g,'<br>')||'...'}</div></div>`;
+  } catch(e) {
+    document.getElementById('ai-typing')?.remove();
+    msgs.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">AI temporarily unavailable. Please try again.</div></div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function newAISession() { currentAISessionId = null; document.getElementById('ai-messages').innerHTML = '<div class="ai-msg bot"><div class="ai-bubble">🤖 New session started! What would you like to learn?</div></div>'; }
+
+// ── Study Plan ──
+function openStudyPlanModal() {
+  document.getElementById('sp-modal').style.display = 'flex';
+  const d = new Date(); d.setMonth(d.getMonth() + 3);
+  document.getElementById('sp-date').value = d.toISOString().split('T')[0];
+}
+
+async function generateStudyPlan() {
+  const goal  = document.getElementById('sp-goal').value.trim();
+  const date  = document.getElementById('sp-date').value;
+  const hours = document.getElementById('sp-hours').value;
+  if (!goal || !date) { alert('Please fill in goal and date'); return; }
+
+  document.getElementById('sp-modal').style.display = 'none';
+
+  try {
+    const res  = await fetch(`${API}/api/study-plan/`, {
+      method:'POST', headers: headers(),
+      body: JSON.stringify({title: goal.slice(0,50), goal, target_date: date, weekly_hours: parseInt(hours), ai_generate: true})
+    });
+    const data = await res.json();
+    loadStudyPlans();
+  } catch(e) { alert('Failed to generate study plan'); }
+}
+
+async function loadStudyPlans() {
+  try {
+    const res   = await fetch(`${API}/api/study-plan/my`, {headers: headers()});
+    const plans = await res.json();
+    const container = document.getElementById('study-plans-list');
+    if (!plans.length) { container.innerHTML = '<div class="empty-state"><div class="emoji">📅</div><h4>No study plans yet</h4><p>Generate an AI-powered plan to structure your learning!</p></div>'; return; }
+
+    container.innerHTML = plans.map(p => `
+      <div class="widget" style="margin-bottom:16px">
+        <div class="widget-header"><span class="widget-title">${p.title}</span><span style="font-size:11px;color:var(--primary-light)">${p.ai_generated ? '🤖 AI Generated' : '📝 Manual'}</span></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">${p.goal}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text-muted)">SCHEDULE</div>
+            ${(p.schedule||[]).slice(0,4).map(s => `<div style="font-size:12px;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px"><strong>${s.day}</strong>: ${s.topic} (${s.duration_hours}h)</div>`).join('')}
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text-muted)">MILESTONES</div>
+            ${(p.milestones||[]).map((m,i) => `<div style="font-size:12px;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+              <span onclick="completeMilestone('${p.id}',${i})" style="cursor:pointer">${m.completed ? '✅' : '⬜'}</span>
+              <span style="${m.completed ? 'text-decoration:line-through;color:var(--text-muted)' : ''}">${m.title}</span>
+              <span style="margin-left:auto;font-size:10px;color:var(--text-muted)">${m.due}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function completeMilestone(planId, idx) {
+  await fetch(`${API}/api/study-plan/${planId}/milestone/${idx}/complete`, {method:'PUT', headers: headers()});
+  loadStudyPlans();
+}
+
+// ── Certificates ──
+async function loadCertificates() {
+  try {
+    const res   = await fetch(`${API}/api/certificates/my`, {headers: headers()});
+    const certs = await res.json();
+    const container = document.getElementById('certs-list');
+    if (!certs.length) { container.innerHTML = '<div class="empty-state"><div class="emoji">🎓</div><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>'; return; }
+
+    container.innerHTML = certs.map(c => `
+      <div class="widget" style="text-align:center">
+        <div style="font-size:48px;margin-bottom:12px">🎓</div>
+        <h3 style="font-size:15px;margin-bottom:6px">${c.course_title}</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Issued: ${new Date(c.issued_at).toLocaleDateString()}</p>
+        <div style="font-size:11px;background:rgba(99,102,241,0.1);padding:6px 12px;border-radius:8px;margin-bottom:16px">Code: <strong>${c.verify_code}</strong></div>
+        <div style="display:flex;gap:8px;justify-content:center">
+          ${c.certificate_url ? `<a href="${c.certificate_url}" target="_blank" class="btn-primary-sm btn-sm"><i class="fas fa-download"></i> Download</a>` : ''}
+          <a href="/verify/${c.verify_code}" target="_blank" class="btn-outline-sm btn-sm"><i class="fas fa-check-circle"></i> Verify</a>
+        </div>
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+// ── Career ──
+async function loadCareerJobs() {
+  try {
+    const res  = await fetch(`${API}/api/career/`, {headers: headers()});
+    const data = await res.json();
+    const grid = document.getElementById('jobs-grid');
+    const types = {internship:'rgba(99,102,241,0.2)',job:'rgba(16,185,129,0.2)',freelance:'rgba(245,158,11,0.2)'};
+
+    if (!data.items?.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">💼</div><h4>No opportunities yet</h4><p>Check back soon!</p></div>'; return; }
+    grid.innerHTML = data.items.map(j => `
+      <div class="widget">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="width:44px;height:44px;border-radius:12px;background:${types[j.type]||'rgba(255,255,255,0.1)'};display:flex;align-items:center;justify-content:center;font-size:20px">🏢</div>
+          <div><div style="font-weight:700;font-size:14px">${j.title}</div><div style="font-size:12px;color:var(--text-muted)">${j.company}</div></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:${types[j.type]||'rgba(255,255,255,0.1)'}">${j.type}</span>
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.06)">${j.location}</span>
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(16,185,129,0.15);color:var(--green)">${j.stipend}</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">${j.description?.slice(0,100)}...</p>
+        <div style="font-size:11px;color:var(--red);margin-bottom:12px">⏰ Deadline: ${j.deadline}</div>
+        <a href="${j.apply_url}" target="_blank" class="btn-primary-sm btn-sm" style="display:inline-flex"><i class="fas fa-external-link-alt"></i> Apply Now</a>
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function loadCareerAI() {
+  const recs = document.getElementById('career-recs');
+  recs.style.display = 'block';
+  recs.innerHTML = '<div style="text-align:center;padding:20px"><i class="fas fa-circle-notch fa-spin" style="font-size:24px;color:var(--primary)"></i><p style="margin-top:12px;color:var(--text-muted)">AI analyzing your profile...</p></div>';
+  try {
+    const res  = await fetch(`${API}/api/career/ai-recommendations`, {headers: headers()});
+    const data = await res.json();
+    recs.innerHTML = `
+      <div class="widget-header"><span class="widget-title">🤖 AI Career Recommendations</span></div>
+      ${(data.recommended_paths||[]).map(p => `
+        <div style="padding:14px;border-radius:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <strong style="font-size:14px">${p.title}</strong>
+            <span style="font-size:12px;color:var(--green);font-weight:700">${p.match}% match</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">${p.description}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${(p.next_steps||[]).map(s => `<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.06)">${s}</span>`).join('')}</div>
+        </div>`).join('')}
+      ${data.skill_gaps?.length ? `<div style="margin-top:8px"><strong style="font-size:13px">Skill Gaps:</strong> ${data.skill_gaps.map(s => `<span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(239,68,68,0.15);margin-left:6px">${s}</span>`).join('')}</div>` : ''}`;
+  } catch(e) { recs.innerHTML = '<p style="color:var(--text-muted);font-size:13px">Could not load AI recommendations.</p>'; }
+}
+
+// ── Analytics Charts ──
+async function loadAnalytics() {
+  try {
+    const res  = await fetch(`${API}/api/analytics/student`, {headers: headers()});
+    const data = await res.json();
+    const ov   = data.overview;
+
+    document.getElementById('analytics-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.2)">📚</div><div class="stat-value">${ov.enrolled_courses}</div><div class="stat-label">Enrolled</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.2)">✅</div><div class="stat-value">${ov.completed_courses}</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.2)">📝</div><div class="stat-value">${data.quiz_stats.avg_score}%</div><div class="stat-label">Avg Quiz Score</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,0.2)">📋</div><div class="stat-value">${data.assignment_stats.avg_marks}</div><div class="stat-label">Avg Assignment</div></div>`;
+
+    // Quiz chart
+    new Chart(document.getElementById('quiz-chart').getContext('2d'), {
+      type:'doughnut',
+      data:{labels:['Passed','Failed'],datasets:[{data:[data.quiz_stats.passed, data.quiz_stats.total_attempts - data.quiz_stats.passed],backgroundColor:['#10b981','#ef4444'],borderWidth:0}]},
+      options:{plugins:{legend:{labels:{color:'#94a3b8'}}},cutout:'70%'}
+    });
+
+    // Progress chart
+    const courses = data.course_progress?.slice(0,5) || [];
+    new Chart(document.getElementById('progress-chart').getContext('2d'), {
+      type:'bar',
+      data:{labels:courses.map(c => c.course_title?.slice(0,15)+'...'),datasets:[{label:'Progress %',data:courses.map(c => c.progress),backgroundColor:'rgba(99,102,241,0.6)',borderRadius:6}]},
+      options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'}},y:{ticks:{color:'#64748b'},max:100}}}
+    });
+  } catch(e) { console.error(e); }
+}
+
+// ── Notifications ──
+async function markAllRead() {
+  await fetch(`${API}/api/notifications/read-all`, {method:'POST', headers: headers()});
+  loadNotifications();
+}
+
+// ── Navigation ──
+function showPage(pageId, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(pageId)?.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+
+  // Lazy load
+  const titles = {
+    dashboard:'Dashboard',
+    'courses-page':'My Courses',
+    'ai-page':'AI Tutor',
+    'live-page':'Live Classes',
+    'quiz-page':'Quizzes',
+    'assignments-page':'Assignments',
+    'study-plan-page':'Study Plan',
+    'certs-page':'Certificates',
+    'leaderboard-page':'Leaderboard',
+    'analytics-page':'Analytics',
+    'notif-page':'Notifications',
+    'jobseekers-page':'Jobseekers Career Prep',
+    'career-page':'Career Portal',
+    'chat-page':'Messages',
+    'school-page':'School Education Module',
+    'college-page':'College Education Module',
+    'ide-page':'Coding & Development Lab',
+    'interview-page':'AI Mock Interview Simulator',
+    'communication-page':'Classroom Communication feed'
+  };
+  document.getElementById('page-title').textContent = titles[pageId] || 'Dashboard';
+
+  if (pageId === 'analytics-page')   loadAnalytics();
+  if (pageId === 'certs-page')       loadCertificates();
+  if (pageId === 'study-plan-page')  loadStudyPlans();
+  if (pageId === 'career-page')      loadCareerJobs();
+  if (pageId === 'school-page')      loadSchoolSubjects('Class 10');
+  if (pageId === 'college-page')     loadCollegeSubjects();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = '/login';
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr);
+  if (diff < 60000)   return 'just now';
+  if (diff < 3600000) return `${Math.floor(diff/60000)}m ago`;
+  if (diff < 86400000)return `${Math.floor(diff/3600000)}h ago`;
+  return `${Math.floor(diff/86400000)}d ago`;
+}
+
+// ── Theme Switcher ──
+function toggleTheme() {
+  document.body.classList.toggle('light-theme');
+  const icon = document.getElementById('theme-icon');
+  if (document.body.classList.contains('light-theme')) {
+    icon.className = 'fas fa-sun';
+  } else {
+    icon.className = 'fas fa-moon';
+  }
+}
+
+// ── Floating Multilingual AI Widget ──
+let aiLang = 'English';
+function toggleFloatingAI() {
+  const card = document.getElementById('floating-ai-card');
+  card.style.display = card.style.display === 'none' ? 'flex' : 'none';
+}
+function changeAILang() {
+  aiLang = document.getElementById('ai-lang-select').value;
+}
+async function sendFloatingAI() {
+  const input = document.getElementById('floating-ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const msgs = document.getElementById('floating-ai-messages');
+  msgs.innerHTML += `<div style="font-size:12px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:8px 12px;border-radius:10px;align-self:flex-end;max-width:85%;margin-top:6px;margin-left:auto;">${msg}</div>`;
+  msgs.innerHTML += `<div style="font-size:12px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;align-self:flex-start;max-width:85%;margin-top:6px;" id="fl-typing">🤖 Skill Sharp AI is thinking...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res = await fetch(`${API}/api/ai/chat`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({message: msg + ` [IMPORTANT: Please answer in ${aiLang} language]`})
+    });
+    const data = await res.json();
+    document.getElementById('fl-typing')?.remove();
+    msgs.innerHTML += `<div style="font-size:12px;background:rgba(99,102,241,0.15);padding:8px 12px;border-radius:10px;align-self:flex-start;max-width:85%;margin-top:6px;line-height:1.5;color:var(--text);">${data.response?.replace(/\n/g,'<br>')}</div>`;
+  } catch (e) {
+    document.getElementById('fl-typing')?.remove();
+    msgs.innerHTML += `<div style="font-size:12px;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;align-self:flex-start;max-width:85%;margin-top:6px;color:var(--red);">Assistant offline.</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── School Education Logic ──
+let currentSchoolSubject = '';
+function showSchoolSection(sec) {
+  document.querySelectorAll('.school-sec').forEach(s => s.style.display = 'none');
+  document.getElementById(`school-${sec}-section`).style.display = 'block';
+}
+async function loadSchoolSubjects(grade = 'Class 10') {
+  const container = document.getElementById('school-subjects-list');
+  container.innerHTML = '<div style="text-align:center;padding:20px;"><i class="fas fa-circle-notch fa-spin" style="font-size:20px;color:var(--primary);"></i><p style="margin-top:10px;font-size:12px;color:var(--text-muted);">Loading subjects...</p></div>';
+  
+  try {
+    const res = await fetch(`${API}/api/courses/?student_type=school&class_grade=${encodeURIComponent(grade)}&limit=100`, {headers: headers()});
+    const data = await res.json();
+    const courses = data.courses || [];
+    
+    if (!courses.length) {
+      container.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px;text-align:center;">📚 No subjects registered for this grade yet.</div>';
+      return;
+    }
+    
+    container.innerHTML = courses.map(c => `
+      <div class="course-row" onclick="selectSchoolSubject('${c.id}', '${c.title.replace(/'/g, "\\'")}')">
+        <div class="course-thumb" style="background:rgba(99,102,241,0.15);font-size:16px;">📚</div>
+        <div class="course-info">
+          <h4 style="margin-bottom:2px">${c.title}</h4>
+          <div style="font-size:11px;color:var(--text-muted)">${c.short_desc || 'Board Syllabus'}</div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    container.innerHTML = '<div style="color:var(--red);font-size:12px;padding:20px;text-align:center;">Failed to connect to the server.</div>';
+  }
+  document.getElementById('school-subject-details').style.display = 'none';
+}
+async function selectSchoolSubject(courseId, title) {
+  currentSchoolSubject = courseId;
+  document.getElementById('school-subject-details').style.display = 'block';
+  document.getElementById('school-subject-title').textContent = title;
+  showSchoolSection('notes');
+  
+  const notesList = document.getElementById('school-notes-list');
+  const lecturesList = document.getElementById('school-lectures-list');
+  notesList.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading notes...';
+  lecturesList.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading lectures...';
+  
+  try {
+    const res = await fetch(`${API}/api/courses/${courseId}`, {headers: headers()});
+    const cData = await res.json();
+    const lecs = cData.lectures || [];
+    
+    notesList.innerHTML = `
+      <div style="font-size:12px;padding:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span>📎 ${title} Board Notes & Key Concepts.pdf</span>
+        <button class="btn-primary-sm btn-sm" onclick="alert('Downloading ${title} Revision Notes...')">Download</button>
+      </div>
+      <div style="font-size:12px;padding:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span>📎 Chapter Practice MCQ Bank.pdf</span>
+        <button class="btn-primary-sm btn-sm" onclick="alert('Downloading Question Bank...')">Download</button>
+      </div>`;
+      
+    if (lecs.length) {
+      lecturesList.innerHTML = lecs.map(l => `
+        <div style="font-size:12px;padding:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;">▶️</span>
+            <div><div style="font-weight:600;">${l.title}</div><div style="font-size:10px;color:var(--text-muted);">${Math.floor(l.duration/60)} minutes</div></div>
+          </div>
+          <button class="btn-primary-sm btn-sm" onclick="alert('Playing Lecture: ${l.title}')">Play Lecture</button>
+        </div>`).join('');
+    } else {
+      lecturesList.innerHTML = '<div style="color:var(--text-muted);font-size:12.5px;padding:10px;text-align:center;">No lecture videos uploaded for this subject yet.</div>';
+    }
+  } catch (e) {
+    lecturesList.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load course detail data.</div>';
+    notesList.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load notes resources.</div>';
+  }
+}
+async function askSchoolAI() {
+  const input = document.getElementById('school-ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const msgs = document.getElementById('school-ai-messages');
+  msgs.innerHTML += `<div style="align-self:flex-end;background:var(--primary);padding:8px 12px;border-radius:10px;font-size:12.5px;color:#fff;margin-top:6px;max-width:85%;margin-left:auto;">${msg}</div>`;
+  msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;font-size:12.5px;margin-top:6px" id="sc-typing">🤖 Doubts solver is thinking...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  try {
+    const res = await fetch(`${API}/api/ai/chat`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({message: msg, course_id: currentSchoolSubject})
+    });
+    const data = await res.json();
+    document.getElementById('sc-typing')?.remove();
+    msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(99,102,241,0.15);padding:10px 14px;border-radius:12px;font-size:12.5px;margin-top:6px;color:var(--text);line-height:1.5;max-width:85%">${data.response?.replace(/\n/g,'<br>')}</div>`;
+  } catch (e) {
+    document.getElementById('sc-typing')?.remove();
+    msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;font-size:12.5px;margin-top:6px;color:var(--red);">Doubt solver offline.</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── College Logic ──
+let currentCollegeSubject = '';
+function showCollegeSection(sec) {
+  document.querySelectorAll('.college-sec').forEach(s => s.style.display = 'none');
+  document.getElementById(`college-${sec}-section`).style.display = 'block';
+}
+async function loadCollegeSubjects() {
+  const stream = document.getElementById('college-stream-select').value;
+  const sem = document.getElementById('college-semester-select').value;
+  const container = document.getElementById('college-subjects-list');
+  container.innerHTML = '<div style="text-align:center;padding:20px;"><i class="fas fa-circle-notch fa-spin" style="font-size:20px;color:var(--primary);"></i><p style="margin-top:10px;font-size:12px;color:var(--text-muted);">Loading syllabus...</p></div>';
+  
+  try {
+    const res = await fetch(`${API}/api/courses/?student_type=college&category=${encodeURIComponent(stream)}&class_grade=${encodeURIComponent(sem)}&limit=100`, {headers: headers()});
+    const data = await res.json();
+    const courses = data.courses || [];
+    
+    if (!courses.length) {
+      container.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px;text-align:center;">🎓 No courses configured for this semester yet.</div>';
+      return;
+    }
+    
+    container.innerHTML = courses.map(c => `
+      <div class="course-row" onclick="selectCollegeSubject('${c.id}', '${c.title.replace(/'/g, "\\'")}')">
+        <div class="course-thumb" style="background:rgba(16,185,129,0.15);font-size:16px;">🎓</div>
+        <div class="course-info">
+          <h4 style="margin-bottom:2px">${c.title}</h4>
+          <div style="font-size:11px;color:var(--text-muted)">${stream} • ${sem}</div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    container.innerHTML = '<div style="color:var(--red);font-size:12px;padding:20px;text-align:center;">Failed to connect to the server.</div>';
+  }
+  document.getElementById('college-subject-details').style.display = 'none';
+}
+async function selectCollegeSubject(courseId, title) {
+  currentCollegeSubject = courseId;
+  document.getElementById('college-subject-details').style.display = 'block';
+  document.getElementById('college-subject-title').textContent = title;
+  showCollegeSection('notes');
+  
+  const notesList = document.getElementById('college-notes-list');
+  const lecturesList = document.getElementById('college-lectures-list');
+  notesList.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading books...';
+  lecturesList.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading lectures...';
+  
+  try {
+    const res = await fetch(`${API}/api/courses/${courseId}`, {headers: headers()});
+    const cData = await res.json();
+    const lecs = cData.lectures || [];
+    
+    notesList.innerHTML = `
+      <div style="font-size:12px;padding:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span>📎 Reference Core Textbook: ${title} Handbook.pdf</span>
+        <button class="btn-primary-sm btn-sm" onclick="alert('Downloading Reference Handbook...')">Download</button>
+      </div>
+      <div style="font-size:12px;padding:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+        <span>📎 Practical Lab Exercises Manual.pdf</span>
+        <button class="btn-primary-sm btn-sm" onclick="alert('Downloading Lab Manual...')">Download</button>
+      </div>`;
+      
+    if (lecs.length) {
+      lecturesList.innerHTML = lecs.map(l => `
+        <div style="font-size:12px;padding:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;">▶️</span>
+            <div><div style="font-weight:600;">${l.title}</div><div style="font-size:10px;color:var(--text-muted);">${Math.floor(l.duration/60)} minutes</div></div>
+          </div>
+          <button class="btn-primary-sm btn-sm" onclick="alert('Playing Lecture: ${l.title}')">Play Video</button>
+        </div>`).join('');
+    } else {
+      lecturesList.innerHTML = '<div style="color:var(--text-muted);font-size:12.5px;padding:10px;text-align:center;">No lectures uploaded for this course yet.</div>';
+    }
+  } catch (e) {
+    lecturesList.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load lectures data.</div>';
+    notesList.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load books details.</div>';
+  }
+}
+async function askCollegeAI() {
+  const input = document.getElementById('college-ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const msgs = document.getElementById('college-ai-messages');
+  msgs.innerHTML += `<div style="align-self:flex-end;background:var(--primary);padding:8px 12px;border-radius:10px;font-size:12.5px;color:#fff;margin-top:6px;max-width:85%;margin-left:auto;">${msg}</div>`;
+  msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;font-size:12.5px;margin-top:6px" id="col-typing">🤖 AI subject guide is thinking...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  try {
+    const res = await fetch(`${API}/api/ai/chat`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({message: msg, course_id: currentCollegeSubject})
+    });
+    const data = await res.json();
+    document.getElementById('col-typing')?.remove();
+    msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(99,102,241,0.15);padding:10px 14px;border-radius:12px;font-size:12.5px;margin-top:6px;color:var(--text);line-height:1.5;max-width:85%">${data.response?.replace(/\n/g,'<br>')}</div>`;
+  } catch (e) {
+    document.getElementById('col-typing')?.remove();
+    msgs.innerHTML += `<div style="align-self:flex-start;background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:10px;font-size:12.5px;margin-top:6px;color:var(--red);">Subject AI offline.</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Coding Lab IDE ──
+async function runIdeCode() {
+  const code = document.getElementById('ide-editor').value;
+  const lang = document.getElementById('ide-lang').value;
+  const term = document.getElementById('ide-console');
+  term.textContent = "Compiling and running code locally on sandboxed process...";
+  term.style.color = '#a5b4fc';
+  
+  try {
+    const res = await fetch(`${API}/api/code-lab/run`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({code: code, language: lang})
+    });
+    const data = await res.json();
+    if (data.stderr) {
+      term.textContent = `[Error Output]\n${data.stderr}`;
+      term.style.color = '#ef4444';
+    } else {
+      term.textContent = `[Console Standard Output]\n${data.stdout}`;
+      term.style.color = '#10b981';
+    }
+  } catch (e) {
+    term.textContent = "[Error] Failed to communicate with sandbox runner compiler.";
+    term.style.color = '#ef4444';
+  }
+}
+async function triggerIdeAssist(action) {
+  const code = document.getElementById('ide-editor').value;
+  const lang = document.getElementById('ide-lang').value;
+  const panel = document.getElementById('ide-ai-panel');
+  panel.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Running Skill Sharp AI Developer Assistant (${action})...`;
+  
+  try {
+    const res = await fetch(`${API}/api/code-lab/ai-assist`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({code: code, language: lang, action: action})
+    });
+    const data = await res.json();
+    panel.innerHTML = data.response?.replace(/\n/g, '<br>');
+  } catch (e) {
+    panel.textContent = "AI Code Review service offline.";
+  }
+}
+
+// ── Jobseeker Career Prep ──
+async function generateJobseekerResume() {
+  const output = document.getElementById('jobseeker-output');
+  output.innerHTML = `<div class="widget-header"><span class="widget-title">AI Resume Builder</span></div><div style="font-size:13px;color:var(--primary-light)"><i class="fas fa-circle-notch fa-spin"></i> Building your resume from profile, courses, and skills...</div>`;
+  try {
+    const res = await fetch(`${API}/api/resume/generate`, {
+      method: 'POST',
+      headers: headers()
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Resume generation failed');
+    output.innerHTML = `
+      <div class="widget-header"><span class="widget-title">AI Generated Resume</span><button class="btn-outline-sm btn-sm" onclick="navigator.clipboard?.writeText(document.getElementById('jobseeker-resume-result').innerText)">Copy</button></div>
+      <pre id="jobseeker-resume-result" style="white-space:pre-wrap;font-size:13px;line-height:1.6;background:rgba(0,0,0,0.18);border:1px solid var(--border);border-radius:12px;padding:14px;max-height:520px;overflow:auto;">${data.resume || 'Resume generated, but no content returned.'}</pre>
+    `;
+  } catch (e) {
+    output.innerHTML = `<div class="widget-header"><span class="widget-title">AI Resume Builder</span></div><div style="font-size:13px;color:var(--red)">Resume generation is unavailable right now. You can still paste resume details in AI Interview Prep for ATS analysis.</div>`;
+  }
+}
+
+function openJobseekerInterviewTool(mode) {
+  showPage('interview-page');
+  const jd = document.getElementById('interview-jd');
+  const resume = document.getElementById('interview-resume');
+  const reports = document.getElementById('interview-reports-panel');
+  const prompts = {
+    analysis: 'Paste a target job description here, then paste your resume below and click Run ATS Scan for resume analysis.',
+    ats: 'Paste the job description here to calculate your ATS match score, missing keywords, and readiness score.',
+    face: 'Paste the role you want to practice for. Then click Start Video Simulator for face-to-face AI interview practice.',
+    mock: 'Paste the job role and requirements here. Then click Start Video Simulator for a full AI mock interview.',
+    proctored: 'Paste the role requirements here. The video simulator will practice webcam-style interview behavior and confidence.',
+    phone: 'Paste the recruiter call or phone-screen role details here. Practice concise HR and introduction answers in the simulator.'
+  };
+  if (jd && !jd.value.trim()) jd.value = prompts[mode] || prompts.analysis;
+  if (resume && !resume.value.trim()) resume.placeholder = 'Paste your resume, profile summary, projects, skills, and experience here...';
+  if (reports) reports.innerHTML = `Jobseeker mode selected: ${mode}. Fill the JD and resume fields, then run ATS scan or start the AI interview simulator.`;
+}
+
+// ── AI Interview Logic ──
+let currentSimSessionId = null;
+let simQuestionId = 1;
+let cameraSimInterval = null;
+
+async function runAtsAnalysis() {
+  const resume = document.getElementById('interview-resume').value;
+  const jd = document.getElementById('interview-jd').value;
+  const panel = document.getElementById('interview-reports-panel');
+  if (!resume || !jd) { alert("Please fill both JD and Resume first!"); return; }
+  
+  panel.innerHTML = "<i class='fas fa-circle-notch fa-spin'></i> AI Scanning Resume and Job Description...";
+  try {
+    const res = await fetch(`${API}/api/interview/analyze`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({resume_text: resume, job_description: jd})
+    });
+    const data = await res.json();
+    panel.innerHTML = `
+      <h4>🎯 ATS Scorecard Analysis</h4>
+      <div style="font-size:24px;font-weight:900;color:var(--green);margin:10px 0;">ATS Match Score: ${data.ats_score}%</div>
+      <div style="font-size:16px;font-weight:700;color:var(--primary-light);margin-bottom:10px;">Career Readiness Score: ${data.readiness_score}/100</div>
+      <p><strong>Missing Skills:</strong> ${data.gap_analysis?.skills_missing?.map(s => `<span style="font-size:11px;background:rgba(239,68,68,0.15);padding:3px 8px;border-radius:6px;margin-left:4px;color:var(--red);">${s}</span>`).join('') || 'None'}</p>
+      <div style="margin-top:10px;"><strong>Key Improvements needed on Resume:</strong><ul>${data.gap_analysis?.improvements?.map(i => `<li>${i}</li>`).join('') || 'None'}</ul></div>
+      <div style="margin-top:10px;"><strong>AI Recommended Courses to bridge gaps:</strong><ul>${data.recommended_courses?.map(c => `<li>${c}</li>`).join('') || 'None'}</ul></div>
+      <div style="margin-top:10px;font-style:italic;color:var(--text-muted);">${data.market_insight || ''}</div>
+    `;
+  } catch (e) {
+    panel.textContent = "AI Analysis service offline.";
+  }
+}
+
+async function startInterviewSession() {
+  const resume = document.getElementById('interview-resume').value;
+  const jd = document.getElementById('interview-jd').value;
+  if (!resume || !jd) { alert("Please provide JD and Resume first!"); return; }
+  
+  document.getElementById('interview-setup').style.display = 'none';
+  document.getElementById('interview-sim').style.display = 'block';
+  
+  const chat = document.getElementById('sim-chat-box');
+  chat.innerHTML = "Initializing video conference camera and compiling mock recruiter questions...";
+  
+  try {
+    // Start camera simulation
+    const video = document.getElementById('interview-video');
+    const fallback = document.getElementById('interview-video-fallback');
+    navigator.mediaDevices?.getUserMedia({video: true}).then(stream => {
+      video.srcObject = stream;
+      video.style.display = 'block';
+      fallback.style.display = 'none';
+    }).catch(() => {
+      // Keep fallback active
+    });
+    
+    // Start simulated trackers animation
+    cameraSimInterval = setInterval(() => {
+      document.getElementById('sim-eye-val').textContent = `${Math.floor(90 + Math.random()*9)}%`;
+      document.getElementById('sim-conf-val').textContent = `${Math.floor(82 + Math.random()*15)}%`;
+    }, 2000);
+    
+    const res = await fetch(`${API}/api/interview/start`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({resume_text: resume, job_description: jd})
+    });
+    const data = await res.json();
+    currentSimSessionId = data.session_id;
+    simQuestionId = 1;
+    chat.innerHTML = `<strong>AI Recruiter [Q${simQuestionId}]:</strong><br>${data.first_question.question}`;
+  } catch (e) {
+    chat.textContent = "Failed to launch mock interview.";
+  }
+}
+
+async function submitSimAnswer() {
+  const input = document.getElementById('sim-answer-input');
+  const answer = input.value.trim();
+  if (!answer) return;
+  input.value = '';
+  
+  const chat = document.getElementById('sim-chat-box');
+  chat.innerHTML += `<div style="color:var(--primary-light);margin-top:8px;"><strong>You:</strong> ${answer}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+  
+  const eye = parseInt(document.getElementById('sim-eye-val').textContent) || 90;
+  const conf = parseInt(document.getElementById('sim-conf-val').textContent) || 85;
+  
+  chat.innerHTML += `<div id="rec-typing" style="margin-top:6px;font-style:italic;">Recruiter is evaluating your answer...</div>`;
+  chat.scrollTop = chat.scrollHeight;
+  
+  try {
+    const res = await fetch(`${API}/api/interview/submit-answer`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({
+        session_id: currentSimSessionId,
+        question_id: simQuestionId,
+        answer: answer,
+        eye_contact_sim: eye,
+        confidence_sim: conf
+      })
+    });
+    const data = await res.json();
+    document.getElementById('rec-typing')?.remove();
+    
+    if (data.completed) {
+      chat.innerHTML += `<div style="color:var(--green);margin-top:8px;"><strong>Session Completed! Report prepared.</strong></div>`;
+      endInterviewSim();
+      
+      // Display scorecard in report panel
+      document.getElementById('interview-reports-panel').innerHTML = `
+        <h4>📝 Simulated Mock Interview Scorecard</h4>
+        <div style="font-size:24px;font-weight:900;color:var(--green);margin:10px 0;">Readiness Score: ${data.score * 10}%</div>
+        <p>${data.report?.replace(/\n/g, '<br>')}</p>
+      `;
+    } else {
+      simQuestionId += 1;
+      chat.innerHTML += `<div style="margin-top:8px;"><strong>AI Recruiter Feedback:</strong> ${data.feedback}</div>`;
+      chat.innerHTML += `<div style="margin-top:8px;font-weight:700;"><strong>AI Recruiter [Q${simQuestionId}]:</strong> ${data.next_question.question}</div>`;
+    }
+  } catch (e) {
+    document.getElementById('rec-typing')?.remove();
+    chat.innerHTML += `<div style="color:var(--red);margin-top:8px;">Communication error.</div>`;
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function endInterviewSim() {
+  if (cameraSimInterval) { clearInterval(cameraSimInterval); cameraSimInterval = null; }
+  const video = document.getElementById('interview-video');
+  if (video && video.srcObject) {
+    video.srcObject.getTracks().forEach(track => track.stop());
+    video.srcObject = null;
+    video.style.display = 'none';
+    document.getElementById('interview-video-fallback').style.display = 'block';
+  }
+  document.getElementById('interview-sim').style.display = 'none';
+  document.getElementById('interview-setup').style.display = 'block';
+}
+
+// ── Direct Announcements Feed / Group chat mock ──
+function createFeedPost() {
+  const input = document.getElementById('feed-post-text');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  
+  const list = document.getElementById('feed-posts-list');
+  const div = document.createElement('div');
+  div.style.padding = '14px';
+  div.style.borderRadius = '12px';
+  div.style.border = '1px solid var(--border)';
+  div.style.background = 'rgba(255,255,255,0.03)';
+  div.style.marginBottom = '10px';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:13px;color:var(--primary-light);">${user?.name} (You)</strong><span style="font-size:11px;color:var(--text-muted);">just now</span></div>
+    <p style="font-size:12.5px;line-height:1.5;">${text}</p>
+  `;
+  list.prepend(div);
+}
+function sendGroupMsg() {
+  const input = document.getElementById('group-chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  
+  const chat = document.getElementById('group-chat-messages');
+  chat.innerHTML += `<div style="font-size:12px;"><strong style="color:var(--primary-light);">${user?.name} (You):</strong> ${msg}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ── Quiz Logic ──
+let currentQuizId = null;
+
+async function loadQuizzes() {
+  try {
+    const res = await fetch(`${API}/api/courses/my-courses`, {headers: H()});
+    const courses = await res.json();
+    let allQuizzes = [];
+    for(let c of courses) {
+      const qRes = await fetch(`${API}/api/quizzes/course/${c.id}`, {headers: H()});
+      if(qRes.ok) {
+        const qs = await qRes.json();
+        allQuizzes = allQuizzes.concat(qs);
+      }
+    }
+    
+    document.getElementById('all-quizzes').innerHTML = allQuizzes.map(q => `
+      <div class="quiz-row" style="cursor:pointer; padding:16px; margin-bottom:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; gap:12px;" onclick="startQuiz('${q.id}')">
+        <div class="icon" style="background:rgba(99,102,241,0.2); width:44px; height:44px; display:flex; justify-content:center; align-items:center; border-radius:10px; font-size:20px;">${q.ai_generated ? '🤖' : '📝'}</div>
+        <div style="flex:1">
+          <h4 style="font-size:15px; margin-bottom:4px;">${q.title}</h4>
+          <div class="meta" style="font-size:12px; color:var(--text-muted)">${q.question_count} Questions • ${q.time_limit} mins • Pass: ${q.passing_score}%</div>
+        </div>
+        <div>
+          ${q.can_attempt ? `<button class="btn btn-primary-sm btn-sm" onclick="event.stopPropagation(); startQuiz('${q.id}')">Take Quiz</button>` : `<span class="badge badge-red">Max Attempts Reached</span>`}
+        </div>
+      </div>
+    `).join('') || '<div class="empty-state">No quizzes available yet.</div>';
+  } catch(e) { console.error('Error loading quizzes:', e); }
+}
+
+async function startQuiz(quizId) {
+  try {
+    const res = await fetch(`${API}/api/quizzes/${quizId}`, {headers: H()});
+    if (!res.ok) throw new Error('Failed to load quiz');
+    const quiz = await res.json();
+    
+    currentQuizId = quizId;
+    document.getElementById('tq-title').textContent = quiz.title;
+    document.getElementById('tq-results').style.display = 'none';
+    
+    let html = `<form id="quiz-form" onsubmit="submitQuizAttempt(event)">`;
+    quiz.questions.forEach((q, idx) => {
+      html += `
+        <div style="margin-bottom:20px; padding:20px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid var(--border)">
+          <div style="font-weight:600; font-size:15px; margin-bottom:14px; color:var(--primary-light)">${idx + 1}. ${q.question}</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            ${q.options.map((opt) => `
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); transition:background 0.2s;">
+                <input type="radio" name="q-${q.id}" value="${opt}" required style="accent-color:var(--primary)">
+                <span style="font-size:14px;">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+    
+    html += `<div style="display:flex;justify-content:flex-end;margin-top:20px;"><button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Quiz</button></div></form>`;
+    
+    document.getElementById('tq-container').innerHTML = html;
+    showPage('take-quiz-page');
+    
+  } catch(e) {
+    alert(e.message);
+  }
+}
+
+async function submitQuizAttempt(e) {
+  e.preventDefault();
+  const form = document.getElementById('quiz-form');
+  const formData = new FormData(form);
+  const answers = {};
+  
+  for (let [key, value] of formData.entries()) {
+    if (key.startsWith('q-')) answers[key.substring(2)] = value;
+  }
+  
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Submitting...';
+  
+  try {
+    const res = await fetch(`${API}/api/quizzes/${currentQuizId}/submit`, {
+      method: 'POST', headers: H(),
+      body: JSON.stringify({ answers: answers, time_taken: 0 })
+    });
+    const result = await res.json();
+    
+    if (!res.ok) throw new Error(result.detail || 'Submission failed');
+    
+    let resultHtml = `
+      <div style="padding:30px; text-align:center;">
+        <div style="font-size:50px; margin-bottom:15px;">${result.passed ? '🎉' : '💡'}</div>
+        <h3 style="color:${result.passed ? 'var(--green)' : 'var(--red)'}; font-size:24px; margin-bottom:10px;">${result.message}</h3>
+        <p style="margin-top:10px; font-size:16px; color:var(--text-muted);">You scored <strong style="color:#fff">${result.score}%</strong> (${result.earned_marks}/${result.total_marks} marks)</p>
+    `;
+    
+    if (result.wrong_topics && result.wrong_topics.length > 0) {
+      resultHtml += `
+        <div style="margin-top:24px; text-align:left; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); padding:20px; border-radius:12px;">
+          <strong style="color:var(--red); font-size:15px;"><i class="fas fa-exclamation-circle"></i> Topics to Review:</strong>
+          <ul style="margin-top:12px; padding-left:24px; color:var(--text); font-size:14px; line-height:1.6;">
+            ${result.wrong_topics.map(t => `<li>${t}...</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+    
+    resultHtml += `<div style="margin-top:30px;"><button class="btn btn-primary" onclick="showPage('quiz-page'); loadQuizzes();">Back to Quizzes</button></div></div>`;
+    
+    document.getElementById('tq-container').innerHTML = '';
+    document.getElementById('tq-results').innerHTML = resultHtml;
+    document.getElementById('tq-results').style.display = 'block';
+    
+    if(typeof loadDashboard === 'function') loadDashboard();
+  } catch(e) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Quiz';
+    alert(e.message);
+  }
+}
+
+init();
+loadQuizzes();
+</script>
+</body>
+</html>

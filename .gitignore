@@ -1,5 +1,16 @@
-node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
 .env
+.env.local
 uploads/
 logs/
 *.log
+node_modules/
+chroma_db/
+.DS_Store
+Thumbs.db

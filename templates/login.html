@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Login — Skills Sharp 365</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--bg:#0a0a0f;--bg2:#12121a;--card:#16213e;--accent:#6c63ff;--accent2:#e94560;--accent3:#00d4aa;--text:#f0f0ff;--text2:#a0a0c0;--text3:#606080;--border:#2a2a4a;--shadow:rgba(108,99,255,0.2);--grad1:linear-gradient(135deg,#6c63ff,#e94560)}
+    [data-theme="light"]{--bg:#f8f9ff;--bg2:#fff;--card:#fff;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;--border:#e0e0f0;--shadow:rgba(108,99,255,0.1)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;pointer-events:none}
+    .orb1{width:400px;height:400px;background:#6c63ff;top:-100px;right:-100px}
+    .orb2{width:300px;height:300px;background:#e94560;bottom:-50px;left:-50px}
+    .auth-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:440px;box-shadow:0 40px 80px rgba(0,0,0,.4)}
+    .auth-header{text-align:center;margin-bottom:2rem}
+    .auth-logo{width:52px;height:52px;background:var(--grad1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin:0 auto 1rem}
+    .auth-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:.3rem}
+    .auth-sub{color:var(--text2);font-size:.9rem}
+    .form-group{margin-bottom:1.25rem}
+    label{display:block;font-size:.85rem;font-weight:600;color:var(--text2);margin-bottom:.5rem}
+    .input-wrap{position:relative}
+    .input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.9rem}
+    input[type=email],input[type=password],input[type=text]{width:100%;padding:.75rem .75rem .75rem 2.5rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.95rem;font-family:'Inter',sans-serif;transition:border .2s,box-shadow .2s;outline:none}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.15)}
+    .eye-btn{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:.9rem}
+    .eye-btn:hover{color:var(--accent)}
+    .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;border:none;font-family:'Inter',sans-serif}
+    .btn-primary{background:var(--grad1);color:#fff;box-shadow:0 4px 20px var(--shadow)}
+    .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .btn-google{background:var(--bg);border:1px solid var(--border);color:var(--text);margin-top:.75rem}
+    .btn-google:hover{border-color:var(--accent);background:rgba(108,99,255,.05)}
+    .divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--text3);font-size:.8rem}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .auth-footer{text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--text2)}
+    .auth-footer a{color:var(--accent);font-weight:600;text-decoration:none}
+    .auth-footer a:hover{text-decoration:underline}
+    .demo-accounts{margin-top:1.5rem;padding:1rem;background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:12px}
+    .demo-accounts h4{font-size:.8rem;color:var(--accent);font-weight:700;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.5px}
+    .demo-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(108,99,255,.1)}
+    .demo-row:last-child{border:none}
+    .demo-role{font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:6px}
+    .role-admin{background:rgba(233,69,96,.15);color:#e94560}
+    .role-teacher{background:rgba(0,212,170,.15);color:#00d4aa}
+    .role-student{background:rgba(108,99,255,.15);color:#6c63ff}
+    .demo-cred{font-size:.75rem;color:var(--text2)}
+    .demo-btn{font-size:.7rem;padding:.25rem .65rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:opacity .2s}
+    .demo-btn:hover{opacity:.8}
+    .alert{padding:.75rem 1rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+    .alert-error{background:rgba(233,69,96,.1);border:1px solid rgba(233,69,96,.3);color:#e94560}
+    .alert-success{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00d4aa}
+    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .theme-btn{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+    @media(max-width:480px){.auth-card{margin:1rem;padding:2rem}}
+  </style>
+</head>
+<body>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="auth-card">
+  <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+  <div class="auth-header">
+    <div class="auth-logo">SS</div>
+    <div class="auth-title">Welcome Back</div>
+    <div class="auth-sub">Sign in to Skills Sharp 365 Innovation</div>
+  </div>
+  <div class="alert alert-error" id="error-alert"></div>
+  <div class="alert alert-success" id="success-alert"></div>
+  <form id="login-form">
+    <div class="form-group">
+      <label>Email Address</label>
+      <div class="input-wrap">
+        <i class="fas fa-envelope input-icon"></i>
+        <input type="email" id="email" placeholder="you@example.com" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" id="password" placeholder="••••••••" required/>
+        <button type="button" class="eye-btn" onclick="togglePass()"><i class="fas fa-eye" id="eye-icon"></i></button>
+      </div>
+    </div>
+    <div id="twofa-group" class="form-group" style="display:none">
+      <label>2FA Code</label>
+      <div class="input-wrap">
+        <i class="fas fa-shield-alt input-icon"></i>
+        <input type="text" id="twofa" placeholder="6-digit code" maxlength="6"/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+  </form>
+  <div class="divider">or continue with</div>
+  <button class="btn btn-google" onclick="googleLogin()"><img src="https://www.google.com/favicon.ico" width="18" height="18"/> Sign in with Google</button>
+  <div class="auth-footer">
+    Don't have an account? <a href="/register">Create one free</a>
+  </div>
+  <!-- Demo Accounts -->
+  <div class="demo-accounts">
+    <h4><i class="fas fa-flask"></i> Test Accounts — Click to Fill</h4>
+    <div class="demo-row">
+      <span class="demo-role role-admin">Admin</span>
+      <span class="demo-cred">admin@skillssharp365.com</span>
+      <button class="demo-btn" onclick="fillDemo('admin@skillssharp365.com','Admin@123')">Use</button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-role role-teacher">Teacher</span>
+      <span class="demo-cred">teacher@skillssharp365.com</span>
+      <button class="demo-btn" onclick="fillDemo('teacher@skillssharp365.com','Teacher@123')">Use</button>
+    </div>
+    <div class="demo-row">
+      <span class="demo-role role-student">Student</span>
+      <span class="demo-cred">student@skillssharp365.com</span>
+      <button class="demo-btn" onclick="fillDemo('student@skillssharp365.com','Student@123')">Use</button>
+    </div>
+  </div>
+</div>
+<script>
+function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('theme',d?'light':'dark')}
+(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);const i=document.getElementById('theme-icon');if(i)i.className=t==='dark'?'fas fa-moon':'fas fa-sun'})();
+
+function togglePass(){const p=document.getElementById('password');const i=document.getElementById('eye-icon');p.type=p.type==='password'?'text':'password';i.className=p.type==='password'?'fas fa-eye':'fas fa-eye-slash'}
+
+function fillDemo(email,pass){document.getElementById('email').value=email;document.getElementById('password').value=pass}
+
+function showError(msg){const a=document.getElementById('error-alert');a.textContent=msg;a.style.display='block';document.getElementById('success-alert').style.display='none'}
+function showSuccess(msg){const a=document.getElementById('success-alert');a.textContent=msg;a.style.display='block';document.getElementById('error-alert').style.display='none'}
+
+document.getElementById('login-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Signing in...';
+  try{
+    const body={email:document.getElementById('email').value,password:document.getElementById('password').value};
+    const tfa=document.getElementById('twofa').value;
+    if(tfa)body.two_fa_code=tfa;
+    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(data.requires2FA){
+      document.getElementById('twofa-group').style.display='block';
+      showError('Please enter your 2FA code');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return;
+    }
+    if(!res.ok){showError(data.detail||'Login failed');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return}
+    localStorage.setItem('access_token',data.access_token);
+    localStorage.setItem('refresh_token',data.refresh_token);
+    localStorage.setItem('user',JSON.stringify(data.user));
+    showSuccess('Login successful! Redirecting...');
+    setTimeout(()=>{
+      if(data.user.role === 'admin') window.location.href='/admin';
+      else if(data.user.role === 'faculty') window.location.href='/faculty';
+      else window.location.href='/dashboard';
+    },800);
+  }catch(err){showError('Network error. Please try again.');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In'}
+});
+
+async function googleLogin(){
+  const email=prompt('Enter your Gmail address:');
+  if(!email)return;
+  const name=email.split('@')[0];
+  try{
+    const res=await fetch('/api/auth/google-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name,google_id:'google_'+Date.now()})});
+    const data=await res.json();
+    if(!res.ok){showError(data.detail||'Google login failed');return}
+    localStorage.setItem('access_token',data.access_token);localStorage.setItem('refresh_token',data.refresh_token);localStorage.setItem('user',JSON.stringify(data.user));
+    if(data.user.role === 'admin') window.location.href='/admin';
+    else if(data.user.role === 'faculty') window.location.href='/faculty';
+    else window.location.href='/dashboard';
+  }catch(e){showError('Google login failed')}
+}
+
+// redirect if already logged in
+if(localStorage.getItem('access_token')){
+  const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  if(savedUser.role === 'admin') window.location.href='/admin';
+  else if(savedUser.role === 'faculty') window.location.href='/faculty';
+  else window.location.href='/dashboard';
+}
+</script>
+</body>
+</html>
