@@ -7,66 +7,95 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root{--bg:#0a0a0f;--bg2:#12121a;--card:#16213e;--accent:#6c63ff;--accent2:#e94560;--accent3:#00d4aa;--text:#f0f0ff;--text2:#a0a0c0;--text3:#606080;--border:#2a2a4a;--shadow:rgba(108,99,255,0.2);--grad1:linear-gradient(135deg,#6c63ff,#e94560)}
-    [data-theme="light"]{--bg:#f8f9ff;--bg2:#fff;--card:#fff;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;--border:#e0e0f0;--shadow:rgba(108,99,255,0.1)}
+    [data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--card:#fff;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;--border:#dde0f0;--shadow:rgba(108,99,255,0.12)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-    .bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;pointer-events:none}
-    .orb1{width:400px;height:400px;background:#6c63ff;top:-100px;right:-100px}
-    .orb2{width:300px;height:300px;background:#e94560;bottom:-50px;left:-50px}
-    .auth-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:440px;box-shadow:0 40px 80px rgba(0,0,0,.4)}
-    .auth-header{text-align:center;margin-bottom:2rem}
-    .auth-logo{width:52px;height:52px;background:var(--grad1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin:0 auto 1rem}
-    .auth-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:.3rem}
-    .auth-sub{color:var(--text2);font-size:.9rem}
-    .form-group{margin-bottom:1.25rem}
-    label{display:block;font-size:.85rem;font-weight:600;color:var(--text2);margin-bottom:.5rem}
+    html,body{height:100%}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow-y:auto}
+    .bg-orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.1;pointer-events:none;z-index:0}
+    .orb1{width:500px;height:500px;background:#6c63ff;top:-120px;right:-120px}
+    .orb2{width:350px;height:350px;background:#e94560;bottom:-80px;left:-80px}
+
+    /* ── Card ── */
+    .auth-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:1.75rem 2rem;width:100%;max-width:440px;box-shadow:0 32px 64px rgba(0,0,0,.45);my:1rem}
+
+    /* ── Header ── */
+    .auth-header{text-align:center;margin-bottom:1.25rem}
+    .auth-logo{width:46px;height:46px;background:var(--grad1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;margin:0 auto .6rem}
+    .auth-title{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.2rem}
+    .auth-sub{color:var(--text2);font-size:.85rem}
+
+    /* ── Form ── */
+    .form-group{margin-bottom:.9rem}
+    label{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.35rem}
     .input-wrap{position:relative}
-    .input-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.9rem}
-    input[type=email],input[type=password],input[type=text]{width:100%;padding:.75rem .75rem .75rem 2.5rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.95rem;font-family:'Inter',sans-serif;transition:border .2s,box-shadow .2s;outline:none}
+    .input-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.85rem;z-index:1}
+    input[type=email],input[type=password],input[type=text]{width:100%;padding:.65rem .75rem .65rem 2.35rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;font-family:'Inter',sans-serif;transition:border .2s,box-shadow .2s;outline:none}
     input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.15)}
-    .eye-btn{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:.9rem}
+    .eye-btn{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:.85rem;z-index:1}
     .eye-btn:hover{color:var(--accent)}
-    .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;border:none;font-family:'Inter',sans-serif}
-    .btn-primary{background:var(--grad1);color:#fff;box-shadow:0 4px 20px var(--shadow)}
+
+    /* ── Buttons ── */
+    .btn{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;padding:.75rem;border-radius:11px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .22s;border:none;font-family:'Inter',sans-serif}
+    .btn-primary{background:var(--grad1);color:#fff;box-shadow:0 4px 18px var(--shadow)}
     .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
-    .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
-    .btn-google{background:var(--bg);border:1px solid var(--border);color:var(--text);margin-top:.75rem}
-    .btn-google:hover{border-color:var(--accent);background:rgba(108,99,255,.05)}
-    .divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--text3);font-size:.8rem}
+    .btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-google{background:var(--bg);border:1px solid var(--border);color:var(--text);margin-top:.6rem}
+    .btn-google:hover{border-color:var(--accent);background:rgba(108,99,255,.06)}
+
+    /* ── Divider ── */
+    .divider{display:flex;align-items:center;gap:.75rem;margin:.9rem 0;color:var(--text3);font-size:.78rem}
     .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-    .auth-footer{text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--text2)}
+
+    /* ── Footer link ── */
+    .auth-footer{text-align:center;margin-top:.9rem;font-size:.82rem;color:var(--text2)}
     .auth-footer a{color:var(--accent);font-weight:600;text-decoration:none}
     .auth-footer a:hover{text-decoration:underline}
-    .demo-accounts{margin-top:1.5rem;padding:1rem;background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:12px}
-    .demo-accounts h4{font-size:.8rem;color:var(--accent);font-weight:700;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.5px}
-    .demo-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(108,99,255,.1)}
-    .demo-row:last-child{border:none}
-    .demo-role{font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:6px}
-    .role-admin{background:rgba(233,69,96,.15);color:#e94560}
-    .role-teacher{background:rgba(0,212,170,.15);color:#00d4aa}
-    .role-student{background:rgba(108,99,255,.15);color:#6c63ff}
-    .demo-cred{font-size:.75rem;color:var(--text2)}
-    .demo-btn{font-size:.7rem;padding:.25rem .65rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:opacity .2s}
-    .demo-btn:hover{opacity:.8}
-    .alert{padding:.75rem 1rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+
+    /* ── Alerts ── */
+    .alert{padding:.6rem .85rem;border-radius:9px;font-size:.82rem;margin-bottom:.85rem;display:none}
     .alert-error{background:rgba(233,69,96,.1);border:1px solid rgba(233,69,96,.3);color:#e94560}
     .alert-success{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00d4aa}
-    .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+
+    /* ── Spinner ── */
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .theme-btn{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
-    @media(max-width:480px){.auth-card{margin:1rem;padding:2rem}}
-    /* Google Login Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+
+    /* ── Theme toggle ── */
+    .theme-btn{position:absolute;top:.85rem;right:.85rem;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:border .2s}
+    .theme-btn:hover{border-color:var(--accent)}
+
+    /* ── Demo Accounts — compact 3-column grid ── */
+    .demo-accounts{margin-top:.9rem;padding:.75rem .85rem;background:rgba(108,99,255,.07);border:1px solid rgba(108,99,255,.18);border-radius:12px}
+    .demo-header{display:flex;align-items:center;gap:.4rem;margin-bottom:.6rem}
+    .demo-header span{font-size:.73rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .demo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem}
+    .demo-card{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:.5rem .4rem;display:flex;flex-direction:column;align-items:center;gap:.3rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+    .demo-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(108,99,255,.15)}
+    .demo-card:active{transform:translateY(0)}
+    .demo-badge{font-size:.68rem;font-weight:700;padding:.15rem .45rem;border-radius:5px;white-space:nowrap}
+    .badge-admin{background:rgba(233,69,96,.18);color:#e94560}
+    .badge-teacher{background:rgba(0,212,170,.15);color:#00d4aa}
+    .badge-student{background:rgba(108,99,255,.18);color:#8b85ff}
+    .demo-email{font-size:.62rem;color:var(--text3);text-align:center;line-height:1.3;word-break:break-all}
+    .demo-pw{font-size:.65rem;color:var(--text2);font-family:monospace;font-weight:600}
+    .demo-use{font-size:.65rem;padding:.2rem .55rem;background:var(--grad1);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:700;width:100%;transition:opacity .2s}
+    .demo-use:hover{opacity:.85}
+
+    /* ── Google Modal ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;padding:1rem}
     .modal-overlay.active{opacity:1;pointer-events:all}
-    .modal-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;width:100%;max-width:380px;box-shadow:0 30px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .25s}
+    .modal-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.75rem;width:100%;max-width:380px;box-shadow:0 30px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .25s}
     .modal-overlay.active .modal-box{transform:translateY(0)}
-    .modal-title{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:.4rem}
-    .modal-sub{font-size:.85rem;color:var(--text2);margin-bottom:1.25rem}
-    .modal-actions{display:flex;gap:.75rem;margin-top:1.25rem}
-    .btn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--text2);flex:1;padding:.75rem;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:border .2s}
+    .modal-title{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:.3rem}
+    .modal-sub{font-size:.82rem;color:var(--text2);margin-bottom:1rem}
+    .modal-actions{display:flex;gap:.65rem;margin-top:1rem}
+    .btn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--text2);flex:1;padding:.65rem;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:border .2s}
     .btn-cancel:hover{border-color:var(--accent)}
-    .btn-confirm{background:var(--grad1);color:#fff;flex:1;padding:.75rem;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s}
+    .btn-confirm{background:var(--grad1);color:#fff;flex:1;padding:.65rem;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s}
     .btn-confirm:hover{opacity:.88}
+    .btn-confirm:disabled{opacity:.5;cursor:not-allowed}
+
+    @media(max-width:480px){.auth-card{padding:1.4rem 1.25rem}.demo-grid{grid-template-columns:1fr 1fr 1fr}.demo-email{font-size:.58rem}}
   </style>
 </head>
 <body>
@@ -74,13 +103,19 @@
 <div class="bg-orb orb2"></div>
 <div class="auth-card">
   <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+
+  <!-- Header -->
   <div class="auth-header">
     <div class="auth-logo">SS</div>
     <div class="auth-title">Welcome Back</div>
     <div class="auth-sub">Sign in to Skills Sharp 365 Innovation</div>
   </div>
+
+  <!-- Alerts -->
   <div class="alert alert-error" id="error-alert"></div>
   <div class="alert alert-success" id="success-alert"></div>
+
+  <!-- Login Form -->
   <form id="login-form">
     <div class="form-group">
       <label>Email Address</label>
@@ -106,101 +141,152 @@
     </div>
     <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
   </form>
+
+  <!-- Divider + Google -->
   <div class="divider">or continue with</div>
-  <button class="btn btn-google" onclick="googleLogin()"><img src="https://www.google.com/favicon.ico" width="18" height="18"/> Sign in with Google</button>
-  <div class="auth-footer">
-    Don't have an account? <a href="/register">Create one free</a>
-  </div>
-  <!-- Demo Accounts -->
+  <button class="btn btn-google" onclick="googleLogin()">
+    <img src="https://www.google.com/favicon.ico" width="16" height="16"/> Sign in with Google
+  </button>
+
+  <!-- Register link -->
+  <div class="auth-footer">Don't have an account? <a href="/register">Create one free</a></div>
+
+  <!-- ── Demo Accounts — all 3 visible at once ── -->
   <div class="demo-accounts">
-    <h4><i class="fas fa-flask"></i> Test Accounts — Click to Fill</h4>
-    <div class="demo-row">
-      <span class="demo-role role-admin">Admin</span>
-      <span class="demo-cred">admin@skillssharp365.com</span>
-      <button class="demo-btn" onclick="fillDemo('admin@skillssharp365.com','Admin@123')">Use</button>
+    <div class="demo-header">
+      <i class="fas fa-flask" style="color:var(--accent);font-size:.75rem"></i>
+      <span>Test Accounts — Click to Login</span>
     </div>
-    <div class="demo-row">
-      <span class="demo-role role-teacher">Teacher</span>
-      <span class="demo-cred">teacher@skillssharp365.com</span>
-      <button class="demo-btn" onclick="fillDemo('teacher@skillssharp365.com','Teacher@123')">Use</button>
-    </div>
-    <div class="demo-row">
-      <span class="demo-role role-student">Student</span>
-      <span class="demo-cred">student@skillssharp365.com</span>
-      <button class="demo-btn" onclick="fillDemo('student@skillssharp365.com','Student@123')">Use</button>
+    <div class="demo-grid">
+
+      <!-- Admin -->
+      <div class="demo-card" onclick="quickLogin('admin@skillssharp365.com','Admin@123')">
+        <span class="demo-badge badge-admin">👑 Admin</span>
+        <span class="demo-email">admin@<br/>skillssharp365.com</span>
+        <span class="demo-pw">Admin@123</span>
+        <button class="demo-use" onclick="event.stopPropagation();quickLogin('admin@skillssharp365.com','Admin@123')">Login</button>
+      </div>
+
+      <!-- Teacher -->
+      <div class="demo-card" onclick="quickLogin('teacher@skillssharp365.com','Teacher@123')">
+        <span class="demo-badge badge-teacher">👩‍🏫 Teacher</span>
+        <span class="demo-email">teacher@<br/>skillssharp365.com</span>
+        <span class="demo-pw">Teacher@123</span>
+        <button class="demo-use" onclick="event.stopPropagation();quickLogin('teacher@skillssharp365.com','Teacher@123')">Login</button>
+      </div>
+
+      <!-- Student -->
+      <div class="demo-card" onclick="quickLogin('student@skillssharp365.com','Student@123')">
+        <span class="demo-badge badge-student">🎓 Student</span>
+        <span class="demo-email">student@<br/>skillssharp365.com</span>
+        <span class="demo-pw">Student@123</span>
+        <button class="demo-use" onclick="event.stopPropagation();quickLogin('student@skillssharp365.com','Student@123')">Login</button>
+      </div>
+
     </div>
   </div>
 </div>
+
 <!-- Google Login Modal -->
 <div class="modal-overlay" id="google-modal" onclick="closeGoogleModal(event)">
   <div class="modal-box">
-    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-      <img src="https://www.google.com/favicon.ico" width="24" height="24"/>
+    <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem">
+      <img src="https://www.google.com/favicon.ico" width="22" height="22"/>
       <div class="modal-title">Continue with Google</div>
     </div>
-    <div class="modal-sub">Enter your email address to sign in. If you don't have an account, one will be created automatically for you.</div>
-    <div class="input-wrap" style="margin-top:.75rem">
+    <div class="modal-sub">Enter your email to sign in. No account? One is created automatically.</div>
+    <div class="input-wrap">
       <i class="fas fa-envelope input-icon"></i>
       <input type="email" id="google-email" placeholder="yourname@gmail.com" style="width:100%" onkeydown="if(event.key==='Enter')confirmGoogleLogin()"/>
     </div>
-    <div id="google-modal-error" style="color:#e94560;font-size:.8rem;margin-top:.5rem;display:none"></div>
-    <div id="google-modal-loading" style="text-align:center;margin-top:.75rem;display:none"><div class="spinner" style="margin:0 auto;border-color:rgba(108,99,255,.3);border-top-color:var(--accent)"></div><div style="font-size:.8rem;color:var(--text2);margin-top:.5rem">Signing you in...</div></div>
+    <div id="google-modal-error" style="color:#e94560;font-size:.78rem;margin-top:.4rem;display:none"></div>
+    <div id="google-modal-loading" style="text-align:center;margin-top:.65rem;display:none">
+      <div class="spinner" style="margin:0 auto;border-color:rgba(108,99,255,.3);border-top-color:var(--accent)"></div>
+      <div style="font-size:.78rem;color:var(--text2);margin-top:.4rem">Signing you in...</div>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeGoogleModalDirect()">Cancel</button>
       <button class="btn-confirm" id="google-confirm-btn" onclick="confirmGoogleLogin()">Continue →</button>
     </div>
   </div>
 </div>
+
 <script>
+/* ── Theme ── */
 function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('theme',d?'light':'dark')}
 (function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);const i=document.getElementById('theme-icon');if(i)i.className=t==='dark'?'fas fa-moon':'fas fa-sun'})();
 
+/* ── Password toggle ── */
 function togglePass(){const p=document.getElementById('password');const i=document.getElementById('eye-icon');p.type=p.type==='password'?'text':'password';i.className=p.type==='password'?'fas fa-eye':'fas fa-eye-slash'}
 
-function fillDemo(email,pass){document.getElementById('email').value=email;document.getElementById('password').value=pass}
-
+/* ── Alerts ── */
 function showError(msg){const a=document.getElementById('error-alert');a.textContent=msg;a.style.display='block';document.getElementById('success-alert').style.display='none'}
 function showSuccess(msg){const a=document.getElementById('success-alert');a.textContent=msg;a.style.display='block';document.getElementById('error-alert').style.display='none'}
 
+/* ── Redirect helper ── */
+function redirectByRole(role){
+  if(role==='admin')window.location.href='/admin';
+  else if(role==='faculty')window.location.href='/faculty';
+  else window.location.href='/dashboard';
+}
+
+/* ── Core login function ── */
+async function doLogin(email, password, tfa){
+  const body={email, password};
+  if(tfa) body.two_fa_code=tfa;
+  const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await res.json();
+  return {res, data};
+}
+
+/* ── Quick one-click demo login ── */
+async function quickLogin(email, pass){
+  showSuccess('Signing in as '+email.split('@')[0]+'...');
+  try{
+    const {res,data}=await doLogin(email,pass,null);
+    if(!res.ok){showError(data.detail||'Login failed. Please wait for deployment to complete and try again.');return}
+    localStorage.setItem('access_token',data.access_token);
+    localStorage.setItem('refresh_token',data.refresh_token);
+    localStorage.setItem('user',JSON.stringify(data.user));
+    showSuccess('✓ Logged in! Redirecting...');
+    setTimeout(()=>redirectByRole(data.user.role),600);
+  }catch(e){showError('Network error. Server may be waking up — please try again in 30 seconds.')}
+}
+
+/* ── Manual login form ── */
 document.getElementById('login-form').addEventListener('submit',async(e)=>{
   e.preventDefault();
   const btn=document.getElementById('submit-btn');
   btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Signing in...';
   try{
-    const body={email:document.getElementById('email').value,password:document.getElementById('password').value};
     const tfa=document.getElementById('twofa').value;
-    if(tfa)body.two_fa_code=tfa;
-    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await res.json();
+    const {res,data}=await doLogin(document.getElementById('email').value,document.getElementById('password').value,tfa);
     if(data.requires2FA){
       document.getElementById('twofa-group').style.display='block';
       showError('Please enter your 2FA code');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return;
     }
-    if(!res.ok){showError(data.detail||'Login failed');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return}
+    if(!res.ok){showError(data.detail||'Invalid credentials');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return}
     localStorage.setItem('access_token',data.access_token);
     localStorage.setItem('refresh_token',data.refresh_token);
     localStorage.setItem('user',JSON.stringify(data.user));
     showSuccess('Login successful! Redirecting...');
-    setTimeout(()=>{
-      if(data.user.role === 'admin') window.location.href='/admin';
-      else if(data.user.role === 'faculty') window.location.href='/faculty';
-      else window.location.href='/dashboard';
-    },800);
+    setTimeout(()=>redirectByRole(data.user.role),800);
   }catch(err){showError('Network error. Please try again.');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In'}
 });
 
+/* ── Google Login ── */
 async function googleLogin(){
   document.getElementById('google-email').value='';
   document.getElementById('google-modal-error').style.display='none';
+  document.getElementById('google-modal-loading').style.display='none';
+  document.getElementById('google-confirm-btn').disabled=false;
+  document.getElementById('google-confirm-btn').style.opacity='1';
   document.getElementById('google-modal').classList.add('active');
   setTimeout(()=>document.getElementById('google-email').focus(),100);
 }
-function closeGoogleModal(e){
-  if(e.target===document.getElementById('google-modal'))closeGoogleModalDirect();
-}
-function closeGoogleModalDirect(){
-  document.getElementById('google-modal').classList.remove('active');
-}
+function closeGoogleModal(e){if(e.target===document.getElementById('google-modal'))closeGoogleModalDirect();}
+function closeGoogleModalDirect(){document.getElementById('google-modal').classList.remove('active');}
+
 async function confirmGoogleLogin(){
   const email=document.getElementById('google-email').value.trim();
   const errEl=document.getElementById('google-modal-error');
@@ -218,27 +304,24 @@ async function confirmGoogleLogin(){
       loadEl.style.display='none';confirmBtn.disabled=false;confirmBtn.style.opacity='1';
       errEl.textContent=data.detail||'Sign-in failed. Please try again.';errEl.style.display='block';return;
     }
-    localStorage.setItem('access_token',data.access_token);localStorage.setItem('refresh_token',data.refresh_token);localStorage.setItem('user',JSON.stringify(data.user));
+    localStorage.setItem('access_token',data.access_token);
+    localStorage.setItem('refresh_token',data.refresh_token);
+    localStorage.setItem('user',JSON.stringify(data.user));
     closeGoogleModalDirect();
-    showSuccess('Signed in successfully! Redirecting...');
-    setTimeout(()=>{
-      if(data.user.role === 'admin') window.location.href='/admin';
-      else if(data.user.role === 'faculty') window.location.href='/faculty';
-      else window.location.href='/dashboard';
-    },800);
+    showSuccess('Signed in! Redirecting...');
+    setTimeout(()=>redirectByRole(data.user.role),800);
   }catch(e){
     loadEl.style.display='none';confirmBtn.disabled=false;confirmBtn.style.opacity='1';
-    errEl.textContent='Network error. Please check your connection and try again.';errEl.style.display='block';
+    errEl.textContent='Network error. Please try again.';errEl.style.display='block';
   }
 }
 
-// redirect if already logged in
-if(localStorage.getItem('access_token')){
-  const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  if(savedUser.role === 'admin') window.location.href='/admin';
-  else if(savedUser.role === 'faculty') window.location.href='/faculty';
-  else window.location.href='/dashboard';
-}
+/* ── Auto-redirect if already logged in ── */
+(function(){
+  const token=localStorage.getItem('access_token');
+  const user=JSON.parse(localStorage.getItem('user')||'{}');
+  if(token&&user.role)redirectByRole(user.role);
+})();
 </script>
 </body>
 </html>
