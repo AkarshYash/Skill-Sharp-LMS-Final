@@ -151,6 +151,12 @@
   <!-- Register link -->
   <div class="auth-footer">Don't have an account? <a href="/register">Create one free</a></div>
 
+  <!-- Server wake-up notice (auto-hides when server responds) -->
+  <div id="server-notice" style="display:none;text-align:center;font-size:.75rem;color:var(--text3);margin:.5rem 0;padding:.4rem .75rem;background:rgba(255,200,0,.06);border:1px solid rgba(255,200,0,.15);border-radius:8px">
+    <i class="fas fa-circle-notch fa-spin" style="color:#f59e0b;margin-right:.3rem"></i>
+    Server is starting up (~30s on free plan)...
+  </div>
+
   <!-- ── Demo Accounts — all 3 visible at once ── -->
   <div class="demo-accounts">
     <div class="demo-header">
@@ -230,34 +236,62 @@ function redirectByRole(role){
   else window.location.href='/dashboard';
 }
 
+/* ── Wake-up ping ── */
+async function wakeServer(){
+  try{await fetch('/health',{method:'GET',signal:AbortSignal.timeout(8000)});}catch(e){}
+}
+
 /* ── Core login function ── */
 async function doLogin(email, password, tfa){
   const body={email, password};
   if(tfa) body.two_fa_code=tfa;
-  const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const res=await fetch('/api/auth/login',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body),
+    signal:AbortSignal.timeout(30000)
+  });
   const data=await res.json();
   return {res, data};
 }
 
-/* ── Quick one-click demo login ── */
+/* ── Quick one-click demo login with auto-retry ── */
 async function quickLogin(email, pass){
-  showSuccess('Signing in as '+email.split('@')[0]+'...');
-  try{
-    const {res,data}=await doLogin(email,pass,null);
-    if(!res.ok){showError(data.detail||'Login failed. Please wait for deployment to complete and try again.');return}
-    localStorage.setItem('access_token',data.access_token);
-    localStorage.setItem('refresh_token',data.refresh_token);
-    localStorage.setItem('user',JSON.stringify(data.user));
-    showSuccess('✓ Logged in! Redirecting...');
-    setTimeout(()=>redirectByRole(data.user.role),600);
-  }catch(e){showError('Network error. Server may be waking up — please try again in 30 seconds.')}
+  showSuccess('⏳ Connecting to server...');
+  await wakeServer();
+
+  let lastErr='';
+  for(let attempt=1; attempt<=3; attempt++){
+    try{
+      if(attempt>1){
+        showSuccess('⏳ Retrying ('+attempt+'/3)... Server is waking up, please wait...');
+        await new Promise(r=>setTimeout(r,4000));
+      }
+      const {res,data}=await doLogin(email,pass,null);
+      if(!res.ok){
+        showError('❌ '+(data.detail||'Login failed. The server may still be deploying — please wait 1 minute and try again.'));
+        return;
+      }
+      localStorage.setItem('access_token',data.access_token);
+      localStorage.setItem('refresh_token',data.refresh_token);
+      localStorage.setItem('user',JSON.stringify(data.user));
+      showSuccess('✅ Logged in! Redirecting...');
+      setTimeout(()=>redirectByRole(data.user.role),600);
+      return;
+    }catch(e){
+      lastErr=e.message||'Network timeout';
+    }
+  }
+  showError('⚠️ Server is still waking up (takes ~30s on free plan). Please try again in a moment.');
 }
 
 /* ── Manual login form ── */
 document.getElementById('login-form').addEventListener('submit',async(e)=>{
   e.preventDefault();
   const btn=document.getElementById('submit-btn');
-  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Signing in...';
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Connecting...';
+  await wakeServer();
+  btn.innerHTML='<div class="spinner"></div> Signing in...';
   try{
     const tfa=document.getElementById('twofa').value;
     const {res,data}=await doLogin(document.getElementById('email').value,document.getElementById('password').value,tfa);
@@ -265,13 +299,13 @@ document.getElementById('login-form').addEventListener('submit',async(e)=>{
       document.getElementById('twofa-group').style.display='block';
       showError('Please enter your 2FA code');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return;
     }
-    if(!res.ok){showError(data.detail||'Invalid credentials');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return}
+    if(!res.ok){showError(data.detail||'Invalid credentials. Check email and password.');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In';return}
     localStorage.setItem('access_token',data.access_token);
     localStorage.setItem('refresh_token',data.refresh_token);
     localStorage.setItem('user',JSON.stringify(data.user));
-    showSuccess('Login successful! Redirecting...');
+    showSuccess('✅ Login successful! Redirecting...');
     setTimeout(()=>redirectByRole(data.user.role),800);
-  }catch(err){showError('Network error. Please try again.');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In'}
+  }catch(err){showError('⚠️ Server is waking up. Please try again in 30 seconds.');btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Sign In'}
 });
 
 /* ── Google Login ── */
@@ -316,7 +350,22 @@ async function confirmGoogleLogin(){
   }
 }
 
-/* ── Auto-redirect if already logged in ── */
+/* ── Auto-ping server on page load to warm it up ── */
+(async function pingOnLoad(){
+  const notice = document.getElementById('server-notice');
+  // Show notice after 3s if server hasn't responded yet
+  const timer = setTimeout(()=>{ notice.style.display='block'; }, 3000);
+  try{
+    const r = await fetch('/health', {signal: AbortSignal.timeout(25000)});
+    clearTimeout(timer);
+    notice.style.display='none';
+    if(!r.ok) console.warn('Server health check failed:', r.status);
+  }catch(e){
+    clearTimeout(timer);
+    notice.innerHTML='<i class="fas fa-exclamation-triangle" style="color:#f59e0b;margin-right:.3rem"></i> Server is waking up — click Login when ready, it will retry automatically.';
+    notice.style.display='block';
+  }
+})();
 (function(){
   const token=localStorage.getItem('access_token');
   const user=JSON.parse(localStorage.getItem('user')||'{}');
