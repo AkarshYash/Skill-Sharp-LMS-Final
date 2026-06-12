@@ -4,7 +4,7 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install -r requirements.txt && python seed.py"
     startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
@@ -13,11 +13,29 @@ services:
         value: sqlite:///./eduai.db
       - key: SECRET_KEY
         generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: FRONTEND_URL
+        value: https://skill-sharp-lms.onrender.com
       - key: GEMINI_API_KEY
-        value: ""
+        value: ""           # ← Paste your key in Render Dashboard
       - key: OPENAI_API_KEY
-        value: ""
+        value: ""           # ← Optional fallback
       - key: STRIPE_SECRET_KEY
+        value: ""           # ← Optional — for payments
+      - key: STRIPE_WEBHOOK_SECRET
+        value: ""
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: ""           # ← Optional — for email notifications
+      - key: SMTP_PASS
         value: ""
       - key: ENABLE_PAYMENTS
         value: "false"
@@ -25,3 +43,13 @@ services:
         value: "false"
       - key: ENABLE_REDIS
         value: "false"
+      - key: ENABLE_2FA
+        value: "true"
+      - key: REQUIRE_COURSE_APPROVAL
+        value: "true"
+      - key: MAX_FILE_SIZE_MB
+        value: "50"
+      - key: RAG_TOP_K
+        value: "4"
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash

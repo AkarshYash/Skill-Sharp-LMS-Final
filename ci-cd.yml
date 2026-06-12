@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD — Skills Sharp 365 LMS
 
 on:
   push:
@@ -7,71 +7,79 @@ on:
     branches: [main]
 
 jobs:
-  test-backend:
+  # ── 1. Lint & Test ───────────────────────────────────────────
+  test:
+    name: Python Lint & Tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: elearning_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm ci
-        working-directory: backend
-      - run: echo "Backend tests would run here"
-        working-directory: backend
 
-  test-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm ci
-        working-directory: frontend
-      - run: npm run build
-        working-directory: frontend
-
-  deploy:
-    needs: [test-backend, test-frontend]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          python-version: "3.11"
+          cache: "pip"
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: Build & push backend
+      - name: Seed database (smoke test)
+        run: python seed.py
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/elearning-backend:${{ github.sha }} ./backend
-          docker push $ECR_REGISTRY/elearning-backend:${{ github.sha }}
+          DATABASE_URL: sqlite:///./eduai.db
+          SECRET_KEY: ci_test_secret_key_32chars_minimum
+          GEMINI_API_KEY: ""
+          OPENAI_API_KEY: ""
 
-      - name: Build & push frontend
+      - name: Start server & health-check
+        run: |
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          sleep 8
+          curl -f http://localhost:8000/health || exit 1
+          curl -f http://localhost:8000/ || exit 1
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/elearning-frontend:${{ github.sha }} ./frontend
-          docker push $ECR_REGISTRY/elearning-frontend:${{ github.sha }}
+          DATABASE_URL: sqlite:///./eduai.db
+          SECRET_KEY: ci_test_secret_key_32chars_minimum
+          GEMINI_API_KEY: ""
+          OPENAI_API_KEY: ""
 
-      - name: Deploy to ECS
-        run: echo "Deploy to AWS ECS via task definition update"
+  # ── 2. Docker Build ──────────────────────────────────────────
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t skillsharp365:${{ github.sha }} .
+
+      - name: Smoke test container
+        run: |
+          docker run -d -p 8000:8000 \
+            -e SECRET_KEY=ci_test_secret_key_32chars \
+            -e DATABASE_URL=sqlite:///./eduai.db \
+            --name lms_test skillsharp365:${{ github.sha }}
+          sleep 15
+          curl -f http://localhost:8000/health || (docker logs lms_test && exit 1)
+          docker stop lms_test
+
+  # ── 3. Deploy to Render ──────────────────────────────────────
+  deploy:
+    name: Deploy to Render.com
+    runs-on: ubuntu-latest
+    needs: [test, docker]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger Render deploy hook
+        run: |
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+            echo "✅ Render deploy triggered"
+          else
+            echo "ℹ️  No RENDER_DEPLOY_HOOK_URL secret set — Render auto-deploys on git push"
+          fi

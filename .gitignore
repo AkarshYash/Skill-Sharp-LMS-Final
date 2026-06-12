@@ -3,7 +3,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.db
+# Keep eduai.db tracked so seed data is deployed with the app
+# *.db  ← intentionally NOT excluded
 *.sqlite
 .env
 .env.local

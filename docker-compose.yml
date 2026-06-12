@@ -1,78 +1,52 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: elearning
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./eduai.db
+      - SECRET_KEY=${SECRET_KEY:-change_this_in_production_32chars_min}
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+      - FRONTEND_URL=http://localhost:8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - ENABLE_PAYMENTS=${ENABLE_PAYMENTS:-false}
+      - ENABLE_EMAIL=${ENABLE_EMAIL:-false}
+      - ENABLE_REDIS=${ENABLE_REDIS:-false}
+    volumes:
+      - uploads_data:/app/static/uploads
+      - chroma_data:/app/chroma_db
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/elearning
-      - REDIS_URL=redis://redis:6379
-    env_file:
-      - ./backend/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - uploads:/app/uploads
-    restart: unless-stopped
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://backend:5000/api
-      - NEXT_PUBLIC_SOCKET_URL=http://backend:5000
-    depends_on:
-      - backend
-    restart: unless-stopped
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   nginx:
     image: nginx:alpine
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - uploads:/var/www/uploads
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - uploads_data:/app/static/uploads:ro
     depends_on:
-      - frontend
-      - backend
+      app:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-  redis_data:
-  uploads:
+  uploads_data:
+  chroma_data:

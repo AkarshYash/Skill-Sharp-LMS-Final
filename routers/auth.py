@@ -63,6 +63,7 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
         is_verified  = True  # Auto-verify for demo
     )
     db.add(user)
+    db.flush()  # Get user.id before creating related records
     
     # Initialize points
     points = models.UserPoints(user_id=user.id)
@@ -141,6 +142,7 @@ def google_login(data: GoogleLoginSchema, db: Session = Depends(get_db)):
             is_verified  = True
         )
         db.add(user)
+        db.flush()  # Get user.id before creating related records
         points = models.UserPoints(user_id=user.id)
         db.add(points)
         db.commit()

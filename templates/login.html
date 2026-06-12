@@ -55,6 +55,18 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .theme-btn{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
     @media(max-width:480px){.auth-card{margin:1rem;padding:2rem}}
+    /* Google Login Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+    .modal-overlay.active{opacity:1;pointer-events:all}
+    .modal-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;width:100%;max-width:380px;box-shadow:0 30px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .25s}
+    .modal-overlay.active .modal-box{transform:translateY(0)}
+    .modal-title{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:.4rem}
+    .modal-sub{font-size:.85rem;color:var(--text2);margin-bottom:1.25rem}
+    .modal-actions{display:flex;gap:.75rem;margin-top:1.25rem}
+    .btn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--text2);flex:1;padding:.75rem;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;transition:border .2s}
+    .btn-cancel:hover{border-color:var(--accent)}
+    .btn-confirm{background:var(--grad1);color:#fff;flex:1;padding:.75rem;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s}
+    .btn-confirm:hover{opacity:.88}
   </style>
 </head>
 <body>
@@ -119,6 +131,25 @@
     </div>
   </div>
 </div>
+<!-- Google Login Modal -->
+<div class="modal-overlay" id="google-modal" onclick="closeGoogleModal(event)">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+      <img src="https://www.google.com/favicon.ico" width="24" height="24"/>
+      <div class="modal-title">Continue with Google</div>
+    </div>
+    <div class="modal-sub">Enter your Gmail address to sign in or create an account automatically.</div>
+    <div class="input-wrap">
+      <i class="fas fa-envelope input-icon"></i>
+      <input type="email" id="google-email" placeholder="yourname@gmail.com" style="width:100%" onkeydown="if(event.key==='Enter')confirmGoogleLogin()"/>
+    </div>
+    <div id="google-modal-error" style="color:#e94560;font-size:.8rem;margin-top:.5rem;display:none"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeGoogleModalDirect()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmGoogleLogin()">Continue</button>
+    </div>
+  </div>
+</div>
 <script>
 function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-icon').className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('theme',d?'light':'dark')}
 (function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);const i=document.getElementById('theme-icon');if(i)i.className=t==='dark'?'fas fa-moon':'fas fa-sun'})();
@@ -158,18 +189,36 @@ document.getElementById('login-form').addEventListener('submit',async(e)=>{
 });
 
 async function googleLogin(){
-  const email=prompt('Enter your Gmail address:');
-  if(!email)return;
-  const name=email.split('@')[0];
+  document.getElementById('google-email').value='';
+  document.getElementById('google-modal-error').style.display='none';
+  document.getElementById('google-modal').classList.add('active');
+  setTimeout(()=>document.getElementById('google-email').focus(),100);
+}
+function closeGoogleModal(e){
+  if(e.target===document.getElementById('google-modal'))closeGoogleModalDirect();
+}
+function closeGoogleModalDirect(){
+  document.getElementById('google-modal').classList.remove('active');
+}
+async function confirmGoogleLogin(){
+  const email=document.getElementById('google-email').value.trim();
+  const errEl=document.getElementById('google-modal-error');
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email address.';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  closeGoogleModalDirect();
+  const name=email.split('@')[0].replace(/[^a-zA-Z0-9 ]/g,' ').trim()||'User';
   try{
     const res=await fetch('/api/auth/google-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name,google_id:'google_'+Date.now()})});
     const data=await res.json();
     if(!res.ok){showError(data.detail||'Google login failed');return}
     localStorage.setItem('access_token',data.access_token);localStorage.setItem('refresh_token',data.refresh_token);localStorage.setItem('user',JSON.stringify(data.user));
-    if(data.user.role === 'admin') window.location.href='/admin';
-    else if(data.user.role === 'faculty') window.location.href='/faculty';
-    else window.location.href='/dashboard';
-  }catch(e){showError('Google login failed')}
+    showSuccess('Signed in! Redirecting...');
+    setTimeout(()=>{
+      if(data.user.role === 'admin') window.location.href='/admin';
+      else if(data.user.role === 'faculty') window.location.href='/faculty';
+      else window.location.href='/dashboard';
+    },800);
+  }catch(e){showError('Google login failed. Please try again.')}
 }
 
 // redirect if already logged in

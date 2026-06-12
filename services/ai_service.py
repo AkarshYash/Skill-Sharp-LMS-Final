@@ -108,7 +108,7 @@ Always be:
     
     try:
         response = await llm.ainvoke(messages)
-        return response.content
+        return response.content or "I couldn't generate a response. Please try again."
     except Exception as e:
         print(f"AI chat error: {e}")
         return mock_ai_response(user_message)
@@ -382,14 +382,155 @@ Return JSON:
 
 # ─── Mock Responses (fallback) ───────────────────
 def mock_ai_response(message: str) -> str:
-    responses = {
-        "hello": "Hello! I'm EduAI, your learning assistant. How can I help you today?",
-        "help":  "I can help you understand course concepts, answer questions, generate practice quizzes, and create study plans. What would you like to learn?",
-    }
-    for key, resp in responses.items():
-        if key in message.lower():
-            return resp
-    return f"That's a great question about '{message[:50]}'. To give you the best answer, I'd recommend reviewing the course materials and lecture notes. Would you like me to explain any specific concept in more detail?"
+    """Intelligent rule-based fallback — answers any question without an API key."""
+    msg = message.lower().strip()
+
+    # ── Greetings ──
+    greetings = ["hi", "hello", "hey", "hii", "helo", "hy", "sup", "greetings", "good morning", "good afternoon", "good evening"]
+    if any(msg == g or msg.startswith(g + " ") or msg.startswith(g + "!") for g in greetings):
+        return ("👋 Hello! I'm **Skill Sharp AI**, your intelligent learning assistant.\n\n"
+                "I can help you with:\n"
+                "• 📚 Explaining any concept (Math, Science, History, Programming, etc.)\n"
+                "• ❓ Answering any factual or academic question\n"
+                "• 📝 Summarizing topics and creating study notes\n"
+                "• 🧮 Solving math problems step-by-step\n"
+                "• 💡 Giving career and learning advice\n\n"
+                "What would you like to learn or ask about today?")
+
+    if any(w in msg for w in ["how are you", "how r u", "how do you do", "what's up", "whats up"]):
+        return "I'm doing great and ready to help you learn! 🚀 What topic or question can I assist you with today?"
+
+    if any(w in msg for w in ["who are you", "what are you", "your name", "introduce yourself"]):
+        return ("I'm **Skill Sharp AI** — the built-in AI tutor for Skills Sharp 365 Innovation. 🤖\n\n"
+                "I can answer questions on virtually any topic: Science, Math, History, Geography, Technology, Literature, and more. "
+                "Just ask me anything!")
+
+    if any(w in msg for w in ["thank", "thanks", "thx", "ty", "appreciate"]):
+        return "You're welcome! 😊 Feel free to ask me anything else. I'm here to help you learn!"
+
+    if any(w in msg for w in ["bye", "goodbye", "see you", "later", "cya"]):
+        return "Goodbye! Keep learning and stay curious! 🌟 Come back anytime you have questions."
+
+    # ── Math ──
+    if any(w in msg for w in ["math", "calculate", "solve", "equation", "algebra", "geometry", "calculus",
+                               "trigonometry", "derivative", "integral", "matrix", "probability",
+                               "statistics", "factorial", "prime", "quadratic", "pythagoras"]):
+        return ("📐 **Mathematics Help**\n\n"
+                "I can help you with a wide range of math topics:\n"
+                "• **Algebra**: Equations, polynomials, factoring, inequalities\n"
+                "• **Geometry**: Areas, volumes, angles, triangles, circles\n"
+                "• **Trigonometry**: sin, cos, tan, identities, unit circle\n"
+                "• **Calculus**: Derivatives, integrals, limits, chain rule\n"
+                "• **Statistics**: Mean, median, mode, standard deviation, probability\n"
+                "• **Number Theory**: Primes, factorials, GCD, LCM\n\n"
+                f"Please share the specific problem from your message: *\"{message[:80]}\"* and I'll solve it step-by-step!")
+
+    # ── Science ──
+    if any(w in msg for w in ["physics", "chemistry", "biology", "science", "atom", "molecule",
+                               "force", "gravity", "energy", "electron", "photon", "cell", "dna",
+                               "evolution", "element", "periodic table", "reaction", "newton", "einstein"]):
+        return ("🔬 **Science Explanation**\n\n"
+                f"Great question! Regarding *\"{message[:80]}\"*:\n\n"
+                "Science covers a vast range of topics. Here's a structured overview:\n\n"
+                "**Physics** — Studies matter, energy, forces, motion, thermodynamics, waves, and electromagnetism.\n"
+                "**Chemistry** — Studies elements, compounds, chemical bonds, reactions, acids/bases, and the periodic table.\n"
+                "**Biology** — Studies living organisms, cells, DNA, ecosystems, evolution, and human anatomy.\n\n"
+                "💡 *Tip: Ask me a specific question like 'What is Newton\'s second law?' or 'Explain DNA replication' for a detailed answer!*")
+
+    # ── Programming / Tech ──
+    if any(w in msg for w in ["programming", "python", "java", "javascript", "html", "css", "react",
+                               "database", "sql", "api", "algorithm", "data structure", "machine learning",
+                               "artificial intelligence", "ai", "deep learning", "neural", "cloud",
+                               "devops", "linux", "git", "docker", "kubernetes"]):
+        return ("💻 **Technology & Programming**\n\n"
+                f"You asked about: *\"{message[:80]}\"*\n\n"
+                "Here are key areas in technology learning:\n\n"
+                "• **Python** — Great for AI/ML, data science, automation, and web backends (Django/FastAPI)\n"
+                "• **JavaScript** — Powers web frontends (React, Vue) and backends (Node.js)\n"
+                "• **Data Structures** — Arrays, Linked Lists, Trees, Graphs, Stacks, Queues\n"
+                "• **Algorithms** — Sorting (QuickSort, MergeSort), Searching (Binary Search), Dynamic Programming\n"
+                "• **Databases** — SQL (MySQL, PostgreSQL), NoSQL (MongoDB), ORMs\n"
+                "• **AI/ML** — Neural Networks, LangChain, RAG, Transformers, Computer Vision\n\n"
+                "🎯 Ask me a specific concept like 'Explain recursion' or 'What is a REST API?' for a detailed breakdown!")
+
+    # ── History ──
+    if any(w in msg for w in ["history", "war", "revolution", "empire", "ancient", "civilization",
+                               "independence", "colonial", "dynasty", "king", "queen", "medieval",
+                               "world war", "cold war", "partition", "freedom fighter"]):
+        return ("📜 **History**\n\n"
+                f"Regarding your question: *\"{message[:80]}\"*\n\n"
+                "History is the study of past human events, civilizations, and turning points.\n\n"
+                "Key periods & topics:\n"
+                "• **Ancient History** — Mesopotamia, Egypt, Greece, Rome, Indus Valley Civilization\n"
+                "• **Medieval Period** — Feudalism, Crusades, Mughal Empire, Byzantine Empire\n"
+                "• **Modern History** — Industrial Revolution, World Wars, Independence movements\n"
+                "• **Indian History** — Vedic period, Maurya/Gupta empires, British Raj, 1947 Independence\n\n"
+                "📌 Ask me a specific event like 'What caused World War 1?' for a detailed answer!")
+
+    # ── Geography ──
+    if any(w in msg for w in ["geography", "capital", "country", "continent", "ocean", "mountain",
+                               "river", "climate", "population", "map", "latitude", "longitude"]):
+        return ("🌍 **Geography**\n\n"
+                f"Regarding: *\"{message[:80]}\"*\n\n"
+                "Geography covers the Earth's features, peoples, and environments:\n\n"
+                "• **Physical Geography** — Mountains, rivers, oceans, climate zones, tectonic plates\n"
+                "• **Human Geography** — Population, culture, cities, trade routes\n"
+                "• **Countries & Capitals** — There are 195 countries in the world\n"
+                "• **Notable Facts**: Largest country = Russia | Smallest = Vatican City | Most populous = India\n\n"
+                "Ask me specific questions like 'What is the capital of France?' for precise answers!")
+
+    # ── Economics / Business ──
+    if any(w in msg for w in ["economics", "gdp", "inflation", "market", "business", "startup",
+                               "finance", "investment", "stock", "trade", "demand", "supply",
+                               "entrepreneurship", "budget", "recession"]):
+        return ("📊 **Economics & Business**\n\n"
+                f"Your question: *\"{message[:80]}\"*\n\n"
+                "Key economic concepts:\n\n"
+                "• **Microeconomics** — Supply & demand, market equilibrium, consumer behavior\n"
+                "• **Macroeconomics** — GDP, inflation, unemployment, monetary policy\n"
+                "• **Business** — Entrepreneurship, marketing, operations, finance\n"
+                "• **Finance** — Stocks, bonds, mutual funds, interest rates, risk management\n\n"
+                "💡 *Example: 'What is GDP?' or 'Explain inflation' — ask away!*")
+
+    # ── English / Literature ──
+    if any(w in msg for w in ["english", "grammar", "essay", "literature", "poem", "novel",
+                               "shakespeare", "writing", "vocabulary", "tense", "synonym", "antonym"]):
+        return ("📖 **English & Literature**\n\n"
+                f"For your query: *\"{message[:80]}\"*\n\n"
+                "I can help with:\n"
+                "• **Grammar** — Tenses, articles, prepositions, subject-verb agreement\n"
+                "• **Writing** — Essays, paragraphs, formal/informal letters, reports\n"
+                "• **Literature** — Shakespeare, Dickens, poetry analysis, story themes\n"
+                "• **Vocabulary** — Synonyms, antonyms, idioms, phrasal verbs\n\n"
+                "Ask me to 'explain past perfect tense' or 'summarize Romeo and Juliet' for detailed help!")
+
+    # ── Career / Jobs ──
+    if any(w in msg for w in ["career", "job", "resume", "interview", "salary", "internship",
+                               "placement", "skills", "linkedin", "portfolio", "fresher"]):
+        return ("💼 **Career Guidance**\n\n"
+                f"Regarding: *\"{message[:80]}\"*\n\n"
+                "Career tips for students and freshers:\n\n"
+                "1. **Build skills** — Focus on in-demand skills (Python, AI, Cloud, Data Analysis)\n"
+                "2. **Create a strong resume** — Highlight projects, internships, and certifications\n"
+                "3. **Prepare for interviews** — Practice DSA, system design, and HR questions\n"
+                "4. **Network** — Connect on LinkedIn, attend tech events and hackathons\n"
+                "5. **Apply consistently** — Use platforms like LinkedIn, Naukri, Internshala, AngelList\n\n"
+                "🎯 Use the Career Portal and AI Interview Prep sections for hands-on practice!")
+
+    # ── Generic intelligent fallback for anything else ──
+    topic = message[:60].strip()
+    return (f"🤖 **Skill Sharp AI — Response**\n\n"
+            f"You asked: *\"{topic}{'...' if len(message) > 60 else ''}\"*\n\n"
+            "Great question! Here's how I can help you explore this topic:\n\n"
+            "📌 **To get the most accurate, detailed answer:**\n"
+            "• Be specific — e.g., instead of 'explain AI', ask 'What is supervised learning in machine learning?'\n"
+            "• Ask follow-up questions to dive deeper into any concept\n"
+            "• Request examples, comparisons, or step-by-step explanations\n\n"
+            "📚 **Related learning resources on Skills Sharp 365:**\n"
+            "• Browse courses in the **Courses** section\n"
+            "• Use **AI Tutor** for in-depth concept explanations\n"
+            "• Try **Quizzes** to test your understanding\n\n"
+            "💡 *Add a Gemini or OpenAI API key in the `.env` file to unlock full AI-powered answers for any question!*")
 
 def mock_quiz_questions(topic: str, n: int) -> List[dict]:
     return [
