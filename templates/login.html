@@ -138,15 +138,16 @@
       <img src="https://www.google.com/favicon.ico" width="24" height="24"/>
       <div class="modal-title">Continue with Google</div>
     </div>
-    <div class="modal-sub">Enter your Gmail address to sign in or create an account automatically.</div>
-    <div class="input-wrap">
+    <div class="modal-sub">Enter your email address to sign in. If you don't have an account, one will be created automatically for you.</div>
+    <div class="input-wrap" style="margin-top:.75rem">
       <i class="fas fa-envelope input-icon"></i>
       <input type="email" id="google-email" placeholder="yourname@gmail.com" style="width:100%" onkeydown="if(event.key==='Enter')confirmGoogleLogin()"/>
     </div>
     <div id="google-modal-error" style="color:#e94560;font-size:.8rem;margin-top:.5rem;display:none"></div>
+    <div id="google-modal-loading" style="text-align:center;margin-top:.75rem;display:none"><div class="spinner" style="margin:0 auto;border-color:rgba(108,99,255,.3);border-top-color:var(--accent)"></div><div style="font-size:.8rem;color:var(--text2);margin-top:.5rem">Signing you in...</div></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeGoogleModalDirect()">Cancel</button>
-      <button class="btn-confirm" onclick="confirmGoogleLogin()">Continue</button>
+      <button class="btn-confirm" id="google-confirm-btn" onclick="confirmGoogleLogin()">Continue →</button>
     </div>
   </div>
 </div>
@@ -203,22 +204,32 @@ function closeGoogleModalDirect(){
 async function confirmGoogleLogin(){
   const email=document.getElementById('google-email').value.trim();
   const errEl=document.getElementById('google-modal-error');
+  const loadEl=document.getElementById('google-modal-loading');
+  const confirmBtn=document.getElementById('google-confirm-btn');
   if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email address.';errEl.style.display='block';return;}
   errEl.style.display='none';
-  closeGoogleModalDirect();
-  const name=email.split('@')[0].replace(/[^a-zA-Z0-9 ]/g,' ').trim()||'User';
+  loadEl.style.display='block';
+  confirmBtn.disabled=true;confirmBtn.style.opacity='.5';
+  const name=email.split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).trim()||'User';
   try{
-    const res=await fetch('/api/auth/google-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name,google_id:'google_'+Date.now()})});
+    const res=await fetch('/api/auth/google-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name,google_id:'google_'+btoa(email)})});
     const data=await res.json();
-    if(!res.ok){showError(data.detail||'Google login failed');return}
+    if(!res.ok){
+      loadEl.style.display='none';confirmBtn.disabled=false;confirmBtn.style.opacity='1';
+      errEl.textContent=data.detail||'Sign-in failed. Please try again.';errEl.style.display='block';return;
+    }
     localStorage.setItem('access_token',data.access_token);localStorage.setItem('refresh_token',data.refresh_token);localStorage.setItem('user',JSON.stringify(data.user));
-    showSuccess('Signed in! Redirecting...');
+    closeGoogleModalDirect();
+    showSuccess('Signed in successfully! Redirecting...');
     setTimeout(()=>{
       if(data.user.role === 'admin') window.location.href='/admin';
       else if(data.user.role === 'faculty') window.location.href='/faculty';
       else window.location.href='/dashboard';
     },800);
-  }catch(e){showError('Google login failed. Please try again.')}
+  }catch(e){
+    loadEl.style.display='none';confirmBtn.disabled=false;confirmBtn.style.opacity='1';
+    errEl.textContent='Network error. Please check your connection and try again.';errEl.style.display='block';
+  }
 }
 
 // redirect if already logged in

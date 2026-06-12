@@ -24,10 +24,28 @@ def seed_database():
     print("      Skill Sharp 365 Innovations -- Database Seed")
     print("====================================================")
     
-    # Initialize connection & clean tables
+    # Initialize connection
     db = SessionLocal()
     
+    # Ensure all tables exist (safe to run on existing DB)
+    Base.metadata.create_all(bind=engine)
+    
+    # ─── IDEMPOTENT CHECK ───────────────────────────────
+    # If admin account already exists with correct password, skip full re-seed
+    existing_admin = db.query(models.User).filter(models.User.email == "admin@skillssharp365.com").first()
+    if existing_admin:
+        from auth_utils import verify_password
+        if verify_password("Admin@123", existing_admin.password):
+            print("[OK] Database already seeded with correct credentials — skipping re-seed.")
+            db.close()
+            return
+        else:
+            print("[INFO] Admin found but password mismatch — re-seeding with correct credentials...")
+    else:
+        print("[INFO] No seed data found — seeding fresh database...")
+    
     print("\n[1/6] Cleaning up old database tables...")
+
     try:
         db.query(models.JobApplication).delete()
         db.query(models.CodeSnippet).delete()

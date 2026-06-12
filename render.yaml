@@ -12,21 +12,23 @@ services:
       - key: DATABASE_URL
         value: sqlite:///./eduai.db
       - key: SECRET_KEY
-        generateValue: true
+        value: skillsharp365_prod_secret_key_2026_do_not_change
       - key: ALGORITHM
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
-        value: "60"
+        value: "1440"
       - key: REFRESH_TOKEN_EXPIRE_DAYS
-        value: "7"
+        value: "30"
       - key: FRONTEND_URL
         value: https://skill-sharp-lms.onrender.com
       - key: GEMINI_API_KEY
-        value: ""           # ← Paste your key in Render Dashboard
+        value: AIzaSyC1_Kr6uGRC3bUSFVpwlzyCNMfV6n46cnc
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
       - key: OPENAI_API_KEY
-        value: ""           # ← Optional fallback
+        value: ""
       - key: STRIPE_SECRET_KEY
-        value: ""           # ← Optional — for payments
+        value: ""
       - key: STRIPE_WEBHOOK_SECRET
         value: ""
       - key: SMTP_HOST
@@ -34,7 +36,7 @@ services:
       - key: SMTP_PORT
         value: "587"
       - key: SMTP_USER
-        value: ""           # ← Optional — for email notifications
+        value: ""
       - key: SMTP_PASS
         value: ""
       - key: ENABLE_PAYMENTS
@@ -46,10 +48,8 @@ services:
       - key: ENABLE_2FA
         value: "true"
       - key: REQUIRE_COURSE_APPROVAL
-        value: "true"
+        value: "false"
       - key: MAX_FILE_SIZE_MB
         value: "50"
       - key: RAG_TOP_K
         value: "4"
-      - key: GEMINI_MODEL
-        value: gemini-1.5-flash
